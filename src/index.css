@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import "tailwindcss";
+
+
+
+
+@theme {
+  /* Custom Breakpoints */
+  /* --breakpoint-xs: 300px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lm: 1024px;
+  --breakpoint-lg: 1280px;
+  --breakpoint-xl: 1436px; */
+
+  /* Custom Colors */
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-PURPLE-100: #7557D3;
+  --color-PURPLE-200: #D3DCFB;
+  --color-PURPLE-300: #DED7F4;
+  --color-PURPLE-400: #8CA0E7;
+  --color-PURPLE-500: #DED7F4E5;
+  --color-PURPLE-600: #7557D380;
+  --color-PURPLE-700: #D3DCFBCC;
+  --color-PURPLE-800: #6951B1;
+  --color-PURPLE-900: #DED7F4B2;
+  --color-PURPLE-1000: #5B44A5;
+  --color-PURPLE-1100: #9072EE;
+  --color-PURPLE-1200: #DED7F480;
+
+  --color-BLUE-100: #3C58A0;
+  --color-BLUE-200: #4FABF7;
+  --color-BLUE-300: #2A428C;
+  --color-BLUE-400: #2F61E3;
+  --color-BLUE-500: #8ECEFF;
+
+  --color-RED-100: #FF8491;
+  --color-RED-200: #FE73C5;
+
+  --color-NEUTRAL-100: #090514;
+  --color-NEUTRAL-200: #090514CC;
+  --color-NEUTRAL-300: #090514E5;
+  --color-NEUTRAL-400: #DCD9E3;
+  --color-NEUTRAL-500: #DCD9E34D;
+  --color-NEUTRAL-600: #E4ECEB;
+  --color-NEUTRAL-700: #09051499;
+  --color-NEUTRAL-800: #09051480;
+  --color-NEUTRAL-900: #1C1D1F;
+  --color-NEUTRAL-1000: #9CA3AF;
+  --color-NEUTRAL-1200: #111111;
+
+  --color-BROWN-100: #A13333;
+
+  --color-GREEN-100: #3ECD59;
+  --color-GREEN-200: #80CB8E;
+  --color-GREEN-300: #E2FFC7;
+  --color-GREEN-400: #AAD880;
+  --color-GREEN-500: #43DD65;
+
+  --color-GREY-100: #EAEAEA;
+  --color-GREY-200: #9DA1A8;
+  --color-GREY-300: #EBEEF2;
+  --color-GREY-400: #5F6166;
+  --color-GREY-500: #D9D9D9;
+  --color-GREY-600: #374151;
+  --color-GREY-700: #181716;
+  --color-GREY-800: #F7F7F8;
+
+
+  --color-YELLOW-100: #FF9C40;
+  --color-YELLOW-200: #FEF102E5;
+  --color-YELLOW-300: #F4C621;
+  --color-YELLOW-600:  #F59E0B;
+
+  --color-MODAL_BACKGROUND: "rgba(11, 12, 14, 0.77)";
+  
+
+  /* Custom Font Family */
+  --font-sans: "Dm Sans", sans-serif;
+}
