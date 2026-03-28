@@ -62,13 +62,14 @@ export const Pagination = ({
 
   return (
     <div
-      className={`flex items-center justify-end mt-29.5 gap-6 py-4 ${className}`}
+      className={`flex flex-wrap items-center justify-between sm:justify-end gap-3 sm:gap-6 py-4 ${className}`}
       data-testid="pagination"
     >
       {/* Rows per page selector */}
       {onItemsPerPageChange && (
         <div className="flex items-center gap-2">
-          <span className="text-sm font-sans text-NEUTRAL-1200">Rows per page</span>
+          <span className="text-xs sm:text-sm font-sans text-NEUTRAL-1200 hidden sm:inline">Rows per page</span>
+          <span className="text-xs font-sans text-NEUTRAL-1200 sm:hidden">Rows</span>
           <div className="relative" ref={dropdownRef}>
             <button
               type="button"
@@ -118,8 +119,8 @@ export const Pagination = ({
       )}
 
       {/* Page info */}
-      <span className="text-sm font-sans text-NEUTRAL-1200" data-testid="page-info">
-        {startItem} – {endItem} of {totalItems}
+      <span className="text-xs sm:text-sm font-sans text-NEUTRAL-1200" data-testid="page-info">
+        {startItem}–{endItem} of {totalItems}
       </span>
 
       {/* Navigation buttons */}

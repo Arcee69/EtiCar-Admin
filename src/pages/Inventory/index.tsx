@@ -1,9 +1,9 @@
 
 
-const Analytics = () => {
+const Inventory = () => {
   return (
-    <div>Analytics</div>
+    <div>Inventory</div>
   )
 }
 
-export default Analytics
+export default Inventory
