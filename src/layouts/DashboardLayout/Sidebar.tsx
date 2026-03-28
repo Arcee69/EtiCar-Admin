@@ -15,6 +15,8 @@ import {
   HiOutlineXMark,
 } from 'react-icons/hi2'
 
+import Logo from '../../assets/icons/logo.svg'
+
 const sections = [
   {
     label: 'MAIN',
@@ -62,14 +64,15 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     >
       {/* Logo */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-GREY-400">
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-ORANGE-100 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">E</span>
           </div>
           <span className="text-white font-bold text-lg tracking-wide">ETI-CAR</span>
-        </div>
+        </div> */}
+        <img src={Logo} alt="logo" className="w-24 h-24" />
         <div className="flex items-center gap-2">
-          <span className="text-xs text-GREY-200 font-medium uppercase tracking-widest">ADMIN</span>
+          {/* <span className="text-xs text-GREY-200 font-medium uppercase tracking-widest">ADMIN</span> */}
           {/* Close button - mobile only */}
           <button
             onClick={onClose}
