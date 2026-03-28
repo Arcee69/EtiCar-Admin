@@ -7,7 +7,7 @@ import { PasswordField } from "../../components";
 
 
 const Login = () => {
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, _] = useState<boolean>(false)
 
 
     const formValidationSchema = Yup.object().shape({
@@ -42,9 +42,9 @@ const Login = () => {
                         {({
                             handleSubmit,
                             handleChange,
-                            dirty,
-                            isValid,
-                            setFieldValue,
+                            // dirty,
+                            // isValid,
+                            // setFieldValue,
                             errors,
                             touched,
                             // setFieldTouched,
