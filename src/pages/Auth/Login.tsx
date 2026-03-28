@@ -4,11 +4,13 @@ import { useState } from "react";
 import * as Yup from "yup";
 
 import { PasswordField } from "../../components";
+import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-    const [loading, _] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
 
+    const navigate = useNavigate();
 
     const formValidationSchema = Yup.object().shape({
         email: Yup.string().email().required("Email is required"),
@@ -17,6 +19,11 @@ const Login = () => {
 
     const submitForm = (values: any) => {
         console.log(values, "values")
+        setLoading(true)
+        setTimeout(() => {
+            setLoading(false)
+            navigate("/overview")
+        }, 3000)
     }
 
     return (

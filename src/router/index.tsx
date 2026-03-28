@@ -37,7 +37,7 @@ const Routers = () => {
             </Route>
 
          
-            <Route path='/login' element={<Login />} />
+            <Route path='/' element={<Login />} />
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='/forgot-password' element={<ForgotPassword />} />
         

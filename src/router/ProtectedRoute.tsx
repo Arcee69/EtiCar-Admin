@@ -8,7 +8,7 @@ export const ProtectRoutes = () => {
     return !isAuthed ? (
       <Outlet />
     ) : (
-      <Navigate to="/login" state={{ from: location }} replace />
+      <Navigate to="/" state={{ from: location }} replace />
     );
   };
 
@@ -19,6 +19,6 @@ export const ProtectRoutes = () => {
     return isAuthed ? (
       <Outlet />
     ) : (
-      <Navigate to="/dashboard" state={{ from: location }} replace />
+      <Navigate to="/overview" state={{ from: location }} replace />
     );
   };
