@@ -34,6 +34,7 @@ const sections = [
       { path: '/service-requests', label: 'Service Requests', icon: HiOutlineClipboardDocumentList },
       { path: '/orders', label: 'Orders', icon: HiOutlineShoppingCart },
       { path: '/wallet', label: 'Wallets', icon: HiOutlineWallet },
+      { path: '/inventory', label: 'Inventory', icon: HiOutlineCube },
     ],
   },
   {
@@ -42,7 +43,6 @@ const sections = [
       { path: '/analytics', label: 'Revenue', icon: HiOutlineChartBar },
       { path: '/notifications', label: 'Notifications', icon: HiOutlineBell },
       { path: '/roles', label: 'Admin Roles', icon: HiOutlineShieldCheck },
-      { path: '/inventory', label: 'Inventory', icon: HiOutlineCube },
     ],
   },
 ]
@@ -100,7 +100,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         isActive
-                          ? 'bg-ORANGE-100 text-white'
+                          ? 'bg-red-600 text-white'
                           : 'text-GREY-200 hover:bg-GREY-400 hover:text-white'
                       }`
                     }
