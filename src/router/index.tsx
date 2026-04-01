@@ -15,6 +15,7 @@ import Users from "../pages/Users";
 import Vehicles from "../pages/Vehicles";
 import Vendors from "../pages/Vendors";
 import Wallet from "../pages/Wallet";
+import Transactions from "../pages/Transactions";
 
 const Routers = () => {
   return (
@@ -34,6 +35,7 @@ const Routers = () => {
               <Route path="/vehicles" element={<Vehicles />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/wallet" element={<Wallet />} />
+              <Route path="/transactions" element={<Transactions />} />
             </Route>
 
          

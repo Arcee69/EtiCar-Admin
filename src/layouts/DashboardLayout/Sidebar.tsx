@@ -11,6 +11,7 @@ import {
   HiOutlineShieldCheck,
   HiOutlineClipboardDocumentList,
   HiOutlineWallet,
+  HiOutlineBanknotes,
   HiOutlineBell,
   HiOutlineXMark,
 } from 'react-icons/hi2'
@@ -34,13 +35,14 @@ const sections = [
       { path: '/service-requests', label: 'Service Requests', icon: HiOutlineClipboardDocumentList },
       { path: '/orders', label: 'Orders', icon: HiOutlineShoppingCart },
       { path: '/wallet', label: 'Wallets', icon: HiOutlineWallet },
+      { path: '/transactions', label: 'Transactions', icon: HiOutlineBanknotes },
       { path: '/inventory', label: 'Inventory', icon: HiOutlineCube },
     ],
   },
   {
     label: 'INSIGHTS',
     items: [
-      { path: '/analytics', label: 'Revenue', icon: HiOutlineChartBar },
+      { path: '/analytics', label: 'Analytics', icon: HiOutlineChartBar },
       { path: '/notifications', label: 'Notifications', icon: HiOutlineBell },
       { path: '/roles', label: 'Admin Roles', icon: HiOutlineShieldCheck },
     ],
