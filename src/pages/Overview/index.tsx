@@ -87,12 +87,12 @@ const recentAlerts: Alert[] = [
     timestamp: '2026-03-07 07:00',
     severity: 'info',
   },
-  {
-    id: '5',
-    message: 'Daily report generated: 23 service requests, 12 orders processed',
-    timestamp: '2026-03-07 00:00',
-    severity: 'info',
-  },
+  // {
+  //   id: '5',
+  //   message: 'Daily report generated: 23 service requests, 12 orders processed',
+  //   timestamp: '2026-03-07 00:00',
+  //   severity: 'info',
+  // },
 ]
 
 const activeServiceRequests: ServiceRequest[] = [
@@ -247,53 +247,57 @@ const Overview = () => {
         />
       </div>
 
-      {/* ── Revenue Overview Chart ── */}
-      <div className="bg-white rounded-xl border border-GREY-100 p-6">
-        <h2 className="text-base font-semibold text-NEUTRAL-100 mb-6">Revenue Overview</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={revenueData}
-            margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
-            barCategoryGap="30%"
-            barGap={4}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#F0F2F5" vertical={false} />
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#707D8F', fontSize: 12 }}
-            />
-            <YAxis
-              tickFormatter={formatNairaAxis}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#707D8F', fontSize: 11 }}
-              width={60}
-            />
-            <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(240,242,245,0.5)' }} />
-            <Bar dataKey="commission" name="Commission"     fill="#202c3c" radius={[3, 3, 0, 0]} />
-            <Bar dataKey="service"    name="Service Revenue" fill="#F57119" radius={[3, 3, 0, 0]} />
-            <Bar dataKey="parts"      name="Parts Revenue"   fill="#2e9e95" radius={[3, 3, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className='flex flex-col lg:flex-row gap-5'>
+        {/* ── Revenue Overview Chart ── */}
+        <div className="bg-white w-full rounded-xl border border-GREY-100 p-6">
+          <h2 className="text-base font-semibold text-NEUTRAL-100 mb-6">Revenue Overview</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={revenueData}
+              margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+              barCategoryGap="30%"
+              barGap={4}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#F0F2F5" vertical={false} />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#707D8F', fontSize: 12 }}
+              />
+              <YAxis
+                tickFormatter={formatNairaAxis}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#707D8F', fontSize: 11 }}
+                width={60}
+              />
+              <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(240,242,245,0.5)' }} />
+              <Bar dataKey="commission" name="Commission"     fill="#202c3c" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="service"    name="Service Revenue" fill="#F57119" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="parts"      name="Parts Revenue"   fill="#2e9e95" radius={[3, 3, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* ── Recent Alerts ── */}
+        <div className="bg-white w-full rounded-xl border border-GREY-100 p-6">
+          <h2 className="text-base font-semibold text-NEUTRAL-100 mb-4">Recent Alerts</h2>
+          <div className="space-y-3">
+            {recentAlerts.map((alert) => (
+              <div
+                key={alert.id}
+                className="rounded-lg px-4 py-3 bg-ORANGE-300 border border-orange-100"
+              >
+                <p className="text-sm text-NEUTRAL-100">{alert.message}</p>
+                <p className="text-xs text-GREY-200 mt-1">{alert.timestamp}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
-      {/* ── Recent Alerts ── */}
-      <div className="bg-white rounded-xl border border-GREY-100 p-6">
-        <h2 className="text-base font-semibold text-NEUTRAL-100 mb-4">Recent Alerts</h2>
-        <div className="space-y-3">
-          {recentAlerts.map((alert) => (
-            <div
-              key={alert.id}
-              className="rounded-lg px-4 py-3 bg-ORANGE-300 border border-orange-100"
-            >
-              <p className="text-sm text-NEUTRAL-100">{alert.message}</p>
-              <p className="text-xs text-GREY-200 mt-1">{alert.timestamp}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── Active Service Requests ── */}
       <div className="bg-white rounded-xl border border-GREY-100 overflow-hidden">
