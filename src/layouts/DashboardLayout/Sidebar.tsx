@@ -58,7 +58,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   return (
     <aside
       className={`
-        fixed left-0 top-0 h-screen w-64 bg-NEUTRAL-200 flex flex-col z-30
+        fixed left-0 top-0 h-screen w-64 bg-NEUTRAL-200  flex flex-col z-30
         transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
@@ -87,7 +87,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3">
+      <nav className="flex-1 overflow-y-hidden py-4  px-3">
         {sections.map((section) => (
           <div key={section.label} className="mb-4">
             <p className="px-3 mb-2 text-xs font-semibold text-GREY-200 tracking-widest uppercase">
