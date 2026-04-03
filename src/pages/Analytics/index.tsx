@@ -68,7 +68,7 @@ const SummaryCard = ({ label, value, subtext, variant = 'dark-navy', icon }: Sum
   }
 
   return (
-    <div className={`flex-1 min-w-[200px] rounded-xl p-5 border text-white ${bgMap[variant]}`}>
+    <div className={`flex-1 min-w-50 rounded-xl p-5 border text-white ${bgMap[variant]}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <p className="text-sm text-white/70 mb-2">{label}</p>
@@ -92,36 +92,36 @@ const SummaryCard = ({ label, value, subtext, variant = 'dark-navy', icon }: Sum
 
 // ─── Custom Pie Label ─────────────────────────────────────────────────────────
 
-interface PieLabelProps {
-  cx?: number
-  cy?: number
-  midAngle?: number
-  innerRadius?: number
-  outerRadius?: number
-  name?: string
-  percent?: number
-}
+// interface PieLabelProps {
+//   cx?: number
+//   cy?: number
+//   midAngle?: number
+//   innerRadius?: number
+//   outerRadius?: number
+//   name?: string
+//   percent?: number
+// }
 
-const RADIAN = Math.PI / 180
+// const RADIAN = Math.PI / 180
 
-const renderCustomLabel = ({ cx = 0, cy = 0, midAngle = 0, outerRadius = 0, name = '', percent = 0 }: PieLabelProps) => {
-  const radius = outerRadius + 32
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="#374151"
-      textAnchor={x > cx ? 'start' : 'end'}
-      dominantBaseline="central"
-      fontSize={12}
-      fontWeight={500}
-    >
-      {`${name} ${(percent * 100).toFixed(0)}%`}
-    </text>
-  )
-}
+// const renderCustomLabel = ({ cx = 0, cy = 0, midAngle = 0, outerRadius = 0, name = '', percent = 0 }: PieLabelProps) => {
+//   const radius = outerRadius + 32
+//   const x = cx + radius * Math.cos(-midAngle * RADIAN)
+//   const y = cy + radius * Math.sin(-midAngle * RADIAN)
+//   return (
+//     <text
+//       x={x}
+//       y={y}
+//       fill="#374151"
+//       textAnchor={x > cx ? 'start' : 'end'}
+//       dominantBaseline="central"
+//       fontSize={12}
+//       fontWeight={500}
+//     >
+//       {`${name} ${(percent * 100).toFixed(0)}%`}
+//     </text>
+//   )
+// }
 
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
 
@@ -170,7 +170,7 @@ const CustomPieTooltip = ({ active, payload }: CustomPieTooltipProps) => {
   if (!active || !payload?.length) return null
   const entry = payload[0]
   return (
-    <div className="bg-white border border-GREY-100 rounded-lg shadow-lg p-3 text-xs min-w-[140px]">
+    <div className="bg-white border border-GREY-100 rounded-lg shadow-lg p-3 text-xs min-w-35">
       <div className="flex items-center gap-2 mb-2">
         <span
           className="w-2.5 h-2.5 rounded-sm inline-block shrink-0"

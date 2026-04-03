@@ -22,7 +22,7 @@ const Login = () => {
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
-            navigate("/overview")
+            navigate("/dashboard")
         }, 3000)
     }
 
@@ -90,7 +90,7 @@ const Login = () => {
                                     </div>
 
                                     <button
-                                        className="bg-NEUTRAL-100 border-none mt-5 text-white rounded-lg p-3 cursor-pointer w-full h-11.5 flex justify-center"
+                                        className="bg-red-600 border-none mt-5 text-white rounded-lg p-3 cursor-pointer w-full h-11.5 flex justify-center"
                                         type="submit"
                                     >
                                         <p className='text-white text-sm  text-center  font-medium'>{loading ? <CgSpinner className=" animate-spin text-lg  " /> : 'Login'}</p>

@@ -22,7 +22,7 @@ const sections = [
   {
     label: 'MAIN',
     items: [
-      { path: '/overview', label: 'Overview', icon: HiOutlineSquares2X2 },
+      { path: '/dashboard', label: 'Dashboard', icon: HiOutlineSquares2X2 },
       { path: '/users', label: 'Users', icon: HiOutlineUsers },
       { path: '/vehicles', label: 'Vehicles', icon: HiOutlineTruck },
       { path: '/providers', label: 'Providers', icon: HiOutlineUserGroup },

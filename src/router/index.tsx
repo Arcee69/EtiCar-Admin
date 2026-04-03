@@ -16,6 +16,7 @@ import Vehicles from "../pages/Vehicles";
 import Vendors from "../pages/Vendors";
 import Wallet from "../pages/Wallet";
 import Transactions from "../pages/Transactions";
+import AuthLayout from "../layouts/AuthLayout";
 
 const Routers = () => {
   return (
@@ -27,7 +28,7 @@ const Routers = () => {
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/orders" element={<Orders />} />
-              <Route path="/overview" element={<Overview />} />
+              <Route path="/dashboard" element={<Overview />} />
               <Route path="/providers" element={<Providers />} />
               <Route path="/roles" element={<Roles />} />
               <Route path="/service-requests" element={<ServiceRequests />} />
@@ -38,10 +39,11 @@ const Routers = () => {
               <Route path="/transactions" element={<Transactions />} />
             </Route>
 
-         
-            <Route path='/' element={<Login />} />
-            <Route path='/reset-password' element={<ResetPassword />} />
-            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route element={<AuthLayout />}>
+              <Route path='/' element={<Login />} />
+              <Route path='/reset-password' element={<ResetPassword />} />
+              <Route path='/forgot-password' element={<ForgotPassword />} />
+            </Route>
         
         </Routes>
     </div>
