@@ -1,3 +1,4 @@
+// Inventory and Vendor related types
 export interface Vendor {
   id: string
   name: string
