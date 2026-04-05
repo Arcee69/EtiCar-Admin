@@ -12,7 +12,6 @@ export interface InventoryItem {
   vendorName: string
   unitPrice: number
   quantity: number
-  reorderLevel: number
 }
 
 export interface InventoryPayload {
@@ -22,7 +21,7 @@ export interface InventoryPayload {
   vendorId: string
   unitPrice: number
   quantity: number
-  reorderLevel: number
+
 }
 
 export interface DeleteInventoryProps {
