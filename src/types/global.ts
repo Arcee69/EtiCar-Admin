@@ -31,3 +31,24 @@ export interface DeleteInventoryProps {
   onClose: () => void
   onDelete: (itemId: string) => void
 }
+
+//Provider related types
+export interface Provider {
+  id: string
+  name: string
+  phone: string
+  services: string[]
+  city: string
+  activeJobs: number
+  completed: number
+  wallet: string
+  email: string
+  registrationDate: string
+  businessType: string
+  status: 'Pending' | 'Verified' | 'Declined'
+  documents: {
+    idCard: string
+    businessRegistration: string
+    addressProof: string
+  }
+}
