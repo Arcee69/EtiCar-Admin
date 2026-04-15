@@ -2,29 +2,50 @@ import { Form, Formik } from "formik";
 import { CgSpinner } from "react-icons/cg";
 import { useState } from "react";
 import * as Yup from "yup";
+import { toast } from "sonner";
 
 import { PasswordField } from "../../components";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../store/hooks";
+import { setCredentials } from "../../store/slices/authSlice";
+import { loginAdmin } from "../../services/auth";
 
 
 const Login = () => {
-    const [loading, setLoading] = useState<boolean>(false)
-
+    const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const formValidationSchema = Yup.object().shape({
-        email: Yup.string().email().required("Email is required"),
+        email: Yup.string().email("Enter a valid email").required("Email is required"),
         password: Yup.string().required("Password is required"),
     });
 
-    const submitForm = (values: any) => {
-        console.log(values, "values")
-        setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
-            navigate("/dashboard")
-        }, 3000)
-    }
+    const submitForm = async (values: { email: string; password: string }) => {
+        setLoading(true);
+        try {
+            const response = await loginAdmin(values);
+            if (response.status) {
+                dispatch(setCredentials({
+                    token: response.data.token,
+                    user: response.data.user,
+                    role: response.data.role,
+                    permissions: response.data.permissions,
+                }));
+                toast.success(response.message || "Login successful.");
+                navigate("/dashboard");
+            } else {
+                toast.error(response.message || "Login failed. Please try again.");
+            }
+        } catch (error: any) {
+            const message =
+                error?.response?.data?.message ||
+                "An error occurred. Please try again.";
+            toast.error(message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className='bg-[#FAFAFA] h-screen flex flex-col justify-center items-center p-4'>
@@ -41,20 +62,15 @@ const Login = () => {
                         }}
                         validationSchema={formValidationSchema}
                         onSubmit={(values) => {
-                            window.scrollTo(0, 0)
-                            console.log(values, "often")
-                            submitForm(values)
+                            window.scrollTo(0, 0);
+                            submitForm(values);
                         }}
                     >
                         {({
                             handleSubmit,
                             handleChange,
-                            // dirty,
-                            // isValid,
-                            // setFieldValue,
                             errors,
                             touched,
-                            // setFieldTouched,
                             values,
                         }) => (
                             <Form onSubmit={handleSubmit} className="flex flex-col">
@@ -83,7 +99,9 @@ const Login = () => {
                                             className="border  rounded-lg border-[#D0D5DD] mt-1.5"
                                             onChange={handleChange}
                                         />
-                                        {/* <p className="text-primary text-left text-xs mt-1.5 font-medium cursor-pointer">Forgot Password?</p> */}
+                                        <p className="text-sm flex justify-end  mt-0.5">
+                                            Forgot password? <span onClick={() => navigate("/change-password")} className="text-blue-500 hover:underline cursor-pointer ml-1 ">Reset here</span>
+                                        </p>
                                         {errors.password && touched.password ? (
                                             <div className='text-red-500 text-xs'>{errors.password}</div>
                                         ) : null}
@@ -92,24 +110,21 @@ const Login = () => {
                                     <button
                                         className="bg-red-600 border-none mt-5 text-white rounded-lg p-3 cursor-pointer w-full h-11.5 flex justify-center"
                                         type="submit"
+                                        disabled={loading}
                                     >
-                                        <p className='text-white text-sm  text-center  font-medium'>{loading ? <CgSpinner className=" animate-spin text-lg  " /> : 'Login'}</p>
+                                        <p className='text-white text-sm text-center font-medium'>
+                                            {loading ? <CgSpinner className="animate-spin text-lg" /> : 'Login'}
+                                        </p>
                                     </button>
 
                                 </div>
-
-
                             </Form>
                         )}
                     </Formik>
                 </div>
-
             </div>
-
         </div>
+    );
+};
 
-    )
-
-}
-
-export default Login
+export default Login;

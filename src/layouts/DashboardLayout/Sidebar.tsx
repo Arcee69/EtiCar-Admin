@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   HiOutlineSquares2X2,
@@ -15,8 +16,15 @@ import {
   HiOutlineBell,
   HiOutlineXMark,
 } from 'react-icons/hi2'
+import { LuLogOut } from 'react-icons/lu'
 
 import Logo from '../../assets/icons/logo.svg'
+
+import { ModalPop } from '../../components'
+import Logout from '../../components/Logout'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../../store'
+
 
 const sections = [
   {
@@ -55,6 +63,11 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false)
+  
+  const { user } = useSelector((state: RootState) => state.auth)
+
+
   return (
     <aside
       className={`
@@ -66,15 +79,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     >
       {/* Logo */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-GREY-400">
-        {/* <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-ORANGE-100 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">E</span>
-          </div>
-          <span className="text-white font-bold text-lg tracking-wide">ETI-CAR</span>
-        </div> */}
         <img src={Logo} alt="logo" className="w-24 h-24" />
         <div className="flex items-center gap-2">
-          {/* <span className="text-xs text-GREY-200 font-medium uppercase tracking-widest">ADMIN</span> */}
           {/* Close button - mobile only */}
           <button
             onClick={onClose}
@@ -115,20 +121,28 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             </ul>
           </div>
         ))}
+        <div className='flex items-center gap-3 px-3.5 cursor-pointer' onClick={() => setIsLogoutModalOpen(true)}>
+          <LuLogOut className='text-red-500' size={20} />
+          <p className="text-sm font-medium text-red-500 truncate">Logout</p>
+        </div>
       </nav>
 
       {/* Footer */}
       <div className="p-4 border-t border-GREY-400">
         <div className="flex items-center gap-3 px-2 py-2">
           <div className="w-8 h-8 bg-GREY-200 rounded-full flex items-center justify-center shrink-0">
-            <span className="text-NEUTRAL-200 text-sm font-semibold">A</span>
+            <span className="text-NEUTRAL-200 text-sm font-semibold">{user?.full_name?.charAt(0)}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">Admin User</p>
-            <p className="text-xs text-GREY-200 truncate">admin@eticar.com</p>
+            <p className="text-sm font-medium text-white truncate">{user?.full_name}</p>
+            <p className="text-xs text-GREY-200 truncate">{user?.email}</p>
           </div>
         </div>
       </div>
+
+      <ModalPop isOpen={isLogoutModalOpen}>
+        <Logout handleClose={() => setIsLogoutModalOpen(false)}/>
+      </ModalPop>
     </aside>
   )
 }

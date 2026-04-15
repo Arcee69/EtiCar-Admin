@@ -1,10 +1,17 @@
 import { HiOutlineBell, HiOutlineBars3 } from 'react-icons/hi2'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../../store'
+import { getInitials } from '../../helper'
 
 interface HeaderProps {
   onMenuClick: () => void
 }
 
 const Header = ({ onMenuClick }: HeaderProps) => {
+  const { user } = useSelector((state: RootState) => state.auth)
+  
+
+
   return (
     <header className="h-16 bg-white border-b border-GREY-100 flex items-center justify-between px-4 md:px-6 sticky top-0 z-20">
       <div className="flex items-center gap-3">
@@ -33,10 +40,10 @@ const Header = ({ onMenuClick }: HeaderProps) => {
         {/* User Profile */}
         <div className="flex items-center gap-2 md:gap-3">
           <div className="w-9 h-9 bg-NEUTRAL-100 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-semibold">AD</span>
+            <span className="text-white text-sm font-semibold">{getInitials(user?.full_name)}</span>
           </div>
           <div className="hidden md:block">
-            <p className="text-sm font-semibold text-NEUTRAL-100 leading-tight">Admin User</p>
+            <p className="text-sm font-semibold text-NEUTRAL-100 leading-tight">{user?.full_name}</p>
             <p className="text-xs text-GREY-200">Administrator</p>
           </div>
         </div>
