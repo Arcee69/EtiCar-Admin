@@ -44,9 +44,26 @@ export interface LoginResponse {
 }
 
 // Inventory and Vendor related types
-export interface Vendor {
+export interface VendorOption {
   id: string
   name: string
+}
+
+export interface locationOption {
+  city: string
+  state: string
+}
+
+export interface Vendor {
+  id: string
+  vendor_name: string
+  business_name: string
+  location: locationOption
+  business_address: string
+  products_count: number
+  orders_fulfilled: number
+  verification_status: 'pending' | 'verified' | 'declined'
+  status: 'active' | 'pending' | 'suspended'
 }
 
 export interface InventoryItem {
@@ -96,4 +113,30 @@ export interface Provider {
     businessRegistration: string
     addressProof: string
   }
+}
+
+
+// Transaction related types
+export interface Transaction {
+  id: string
+  wallet_id: string
+  user: {
+    id: string
+    name: string
+    email: string
+    phone: string
+  }
+  type: 'credit' | 'debit'
+  status: 'pending' | 'successful' | 'failed'
+  amount: number
+  fee: number
+  balance_before: number
+  balance_after: number
+  currency: string
+  provider_ref: string | null
+  provider_name: string | null
+  description: string
+  metadata: any | null
+  created_at: string
+  updated_at: string
 }

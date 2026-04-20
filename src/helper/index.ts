@@ -7,3 +7,6 @@ export function getInitials(full_name: string | undefined): string {
       .toUpperCase()
       .slice(0, 2)
   }
+
+export const formatNaira = (amount: number) =>
+  `₦${amount.toLocaleString('en-NG')}`

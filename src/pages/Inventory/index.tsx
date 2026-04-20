@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlinePlus, HiOutlinePencilSquare, HiOutlineTrash} from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
-import type { InventoryItem, InventoryPayload, Vendor } from '../../types/global'
+import type { InventoryItem, InventoryPayload, VendorOption } from '../../types/global'
 import InventoryFormModal from './components/InventoryFormModal'
 import DeleteInventory from './components/DeleteInventory'
 
 
-const vendors: Vendor[] = [
+const vendors: VendorOption[] = [
   { id: 'VN001', name: 'Amara Parts' },
   { id: 'VN002', name: 'Northern Auto Supply' },
   { id: 'VN003', name: 'Capital Spares' },

@@ -19,7 +19,7 @@ export function ModalPop({ children, isOpen, closeModal }: ModalPopProps) {
       onClick={() => {
         closeModal && closeModal();
       }}
-      className={`fixed w-full h-screen top-16 left-0   backdrop-blur-xs flex z-50 justify-center  overflow-hidden md:p-4 p-2`}
+      className={`fixed w-full h-screen top-0 left-0 bg-[#0b0c0ec4] backdrop-blur-xs flex z-50 justify-center  overflow-hidden md:p-4 p-2`}
     >
       {children}
     </div>,

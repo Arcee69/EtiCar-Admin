@@ -1,14 +1,14 @@
 import { HiOutlineXMark } from "react-icons/hi2"
 import { ModalPop } from "../../../components"
 import { useEffect, useMemo, useState } from "react"
-import type { InventoryItem, InventoryPayload, Vendor } from "../../../types/global"
+import type { InventoryItem, InventoryPayload, VendorOption } from "../../../types/global"
 
 
 interface InventoryFormModalProps {
   isOpen: boolean
   title: string
   submitLabel: string
-  vendorsList: Vendor[]
+  vendorsList: VendorOption[]
   initialValue?: InventoryItem | null
   onClose: () => void
   onSubmit: (payload: InventoryPayload) => void
