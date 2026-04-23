@@ -1,10 +1,10 @@
 import { HiOutlineXMark } from "react-icons/hi2";
-import type { Wallet } from "../../../types/global";
+import type { WalletData } from "../../../types/global";
 import { formatNaira } from "../../../helper";
 
 interface WalletDetailsProps {
     handleClose: () => void;
-    walletDetails: Wallet | null;
+    walletDetails: WalletData | null;
 }
 
 const WalletDetails = ({ handleClose, walletDetails }: WalletDetailsProps) => {

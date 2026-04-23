@@ -1,10 +1,10 @@
-import type { Wallet, WalletStats } from "../types/global"
+import type { WalletData, WalletStats } from "../types/global"
 import { GET_WALLET } from "./api"
 import apiInstance from "./instance"
 
 
 export interface WalletResponse {
-  data: Wallet[]
+  data: WalletData[]
   current_page: number
   last_page: number
   per_page: number
@@ -33,14 +33,14 @@ export const walletApi = {
   },
 
   // Get single wallet by ID
-  getWallet: async (id: string): Promise<Wallet> => {
+  getWallet: async (id: string): Promise<WalletData> => {
     const response = await apiInstance.get(`${GET_WALLET}/${id}`)
     return response.data.data
   },
 
 
   // Update wallet status
-  updateWalletStatus: async (id: string, status: 'freeze' | 'unfreeze', data: string): Promise<Wallet> => {
+  updateWalletStatus: async (id: string, status: 'freeze' | 'unfreeze', data: string): Promise<WalletData> => {
     const response = await apiInstance.post(`${GET_WALLET}/${id}/${status}`, { reason: data })
     return response.data.data
   },

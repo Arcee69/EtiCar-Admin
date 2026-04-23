@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Wallet } from '../../../types/global';
+import type { WalletData } from '../../../types/global';
 import { toast } from 'sonner';
 import { walletApi } from '../../../services/wallet';
 import { CgSpinner } from 'react-icons/cg';
@@ -7,7 +7,7 @@ import { HiOutlineXMark } from 'react-icons/hi2';
 
 interface UpdateWalletStatusProps {
     handleClose: () => void;
-    walletDetails: Wallet | null;
+    walletDetails: WalletData | null;
     onUpdate?: () => void; // Callback to refresh wallet list
 }
 const UpdateWalletStatus = ({ handleClose, walletDetails, onUpdate }: UpdateWalletStatusProps) => {

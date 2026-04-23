@@ -142,7 +142,7 @@ export interface Transaction {
 }
 
 //Wallet related types
-export interface Wallet {
+export interface WalletData {
   id: string
   user_id: string
   user: {
