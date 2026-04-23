@@ -2,13 +2,13 @@ import { HiOutlineXMark } from "react-icons/hi2"
 import { useState } from "react"
 import { toast } from "sonner"
 import { usersApi } from "../../../services/users"
-import type { Users } from "../../../types/global"
+import type { UsersData } from "../../../types/global"
 import { CgSpinner } from "react-icons/cg"
 
 
 interface DeactivateUserProps {
     handleClose: () => void
-    userDetails: Users | null
+    userDetails: UsersData | null
     onUpdate?: () => void; // Callback to refresh user list 
 }
 

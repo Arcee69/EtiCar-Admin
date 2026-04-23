@@ -182,7 +182,7 @@ export interface WalletStats {
 }
 
 // User related types
-export interface Users {
+export interface UsersData {
   id: string
   name: string
   phone: string

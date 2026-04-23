@@ -1,10 +1,10 @@
 import { HiOutlineXMark } from "react-icons/hi2"
-import type { Users } from "../../../types/global"
+import type { UsersData } from "../../../types/global"
 
 
 interface UserDetailsProps {
     handleClose: () => void
-    userDetails: Users | null
+    userDetails: UsersData | null
 }
 
 const UserDetails = ({ handleClose, userDetails }: UserDetailsProps) => {

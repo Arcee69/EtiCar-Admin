@@ -6,12 +6,12 @@ import * as Yup from "yup"
 import { toast } from "sonner"
 
 
-import type { Users } from "../../../types/global"
+import type { UsersData } from "../../../types/global"
 import { usersApi } from "../../../services/users"
 
 interface UserDetailsProps {
     handleClose: () => void
-    userDetails: Users | null
+    userDetails: UsersData | null
     onUpdate?: () => void; // Callback to refresh user list
 }
 

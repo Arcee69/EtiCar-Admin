@@ -1,4 +1,4 @@
-import type { Users } from "../types/global"
+import type { UsersData } from "../types/global"
 import { GET_USERS } from "./api"
 import apiInstance from "./instance"
 
@@ -10,7 +10,7 @@ export interface UsersFilters {
 }
 
 export interface UserResponse {
-  data: Users[]
+  data: UsersData[]
   current_page: number
   last_page: number
   per_page: number
@@ -32,26 +32,26 @@ export const usersApi = {
   },
 
   // Update user
-    updateUser: async (id: string, data: Partial<Users>): Promise<Users> => {
+    updateUser: async (id: string, data: Partial<UsersData>): Promise<UsersData> => {
         const response = await apiInstance.put(`${GET_USERS}/${id}`, data)
         return response.data.data
     },
 
   //Update user status
-  updateUserStatus: async (id: string, status: 'activate' | 'deactivate'): Promise<Users> => {
+  updateUserStatus: async (id: string, status: 'activate' | 'deactivate'): Promise<UsersData> => {
     const response = await apiInstance.post(`${GET_USERS}/${id}/${status}`)
     return response.data.data
   },
 
   //Deactivate user
-  deactivateUser: async (id: string): Promise<Users> => {
+  deactivateUser: async (id: string): Promise<UsersData> => {
     const response = await apiInstance.delete(`${GET_USERS}/${id}`)
     return response.data.data
   },
 
 
     // Get single user by ID
-    // getUserById: async (id: number): Promise<Users> => {
+    // getUserById: async (id: number): Promise<UsersData> => {
     //   const response = await apiInstance.get(`${GET_USERS}/${id}`)
     //   return response.data
     // },

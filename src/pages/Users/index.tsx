@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlineEllipsisVertical } from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
-import type { Users } from '../../types/global'
+import type { UsersData } from '../../types/global'
 import { ModalPop } from '../../components'
 import UserDetails from './components/UserDetails'
 import UpdateUser from './components/UpdateUser'
@@ -27,8 +27,8 @@ const Users = () => {
   const [openUserDetails, setOpenUserDetails] = useState(false)
   const [openUpdateUser, setOpenUpdateUser] = useState(false)
   const [openDeactivateUser, setOpenDeactivateUser] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<Users | null>(null)
-  const [users, setUsers] = useState<Users[]>([])
+  const [selectedUser, setSelectedUser] = useState<UsersData | null>(null)
+  const [users, setUsers] = useState<UsersData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [totalItems, setTotalItems] = useState(0)
@@ -66,7 +66,7 @@ const Users = () => {
   }, [search])
 
 
-  const columns: Column<Users>[] = [
+  const columns: Column<UsersData>[] = [
     {
       key: 'id',
       header: 'ID',
