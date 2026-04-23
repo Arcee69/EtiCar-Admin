@@ -6,11 +6,11 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { ordersApi } from "../../../services/orders";
 
-import type { Orders } from "../../../types/global";
+import type { OrdersData } from "../../../types/global";
 
 interface OrderDetailsProps {
     handleClose: () => void
-    orderDetails: Orders | null
+    orderDetails: OrdersData | null
     onUpdate?: () => void; // Callback to refresh order list
 }
 

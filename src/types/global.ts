@@ -200,7 +200,7 @@ export interface Users {
 }
 
 //Orders related types
-export interface Orders {
+export interface OrdersData {
   id: string
   order_number: string
   order_number_short: string

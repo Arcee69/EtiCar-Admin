@@ -1,10 +1,10 @@
 import { HiOutlineXMark } from "react-icons/hi2";
-import type { Orders } from "../../../types/global";
+import type { OrdersData } from "../../../types/global";
 import { formatNaira } from "../../../helper";
 
 interface OrderDetailsProps {
     handleClose: () => void
-    orderDetails: Orders | null
+    orderDetails: OrdersData | null
 }
 
 type OrderStatus = 'delivered' | 'pending' | 'shipped' | 'cancelled' | 'confirmed'

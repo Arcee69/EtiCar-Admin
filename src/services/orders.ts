@@ -1,4 +1,4 @@
-import type { Orders } from "../types/global"
+import type { OrdersData } from "../types/global"
 import { GET_ORDERS } from "./api"
 import apiInstance from "./instance"
 
@@ -10,7 +10,7 @@ export interface OrdersFilters {
 }
 
 export interface OrdersResponse {
-  data: Orders[]
+  data: OrdersData[]
   current_page: number
   last_page: number
   per_page: number
@@ -33,19 +33,19 @@ export const ordersApi = {
   },
 
   // Get single order by ID
-  getOrder: async (id: string): Promise<Orders> => {
+  getOrder: async (id: string): Promise<OrdersData> => {
     const response = await apiInstance.get(`${GET_ORDERS}/${id}`)
     return response.data.data
   },
 
   //Update Order
-  updateOrder: async (id: string, data: Partial<Orders>): Promise<Orders> => {
+  updateOrder: async (id: string, data: Partial<OrdersData>): Promise<OrdersData> => {
     const response = await apiInstance.patch(`${GET_ORDERS}/${id}/status`, data)
     return response.data.data
   },
 
   //Cancel Order
-  cancelOrder: async (id: string, data: string): Promise<Orders> => {
+  cancelOrder: async (id: string, data: string): Promise<OrdersData> => {
     const response = await apiInstance.post(`${GET_ORDERS}/${id}/cancel`, { reason: data })
     return response.data.data
   },

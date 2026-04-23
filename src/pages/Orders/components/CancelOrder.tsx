@@ -1,5 +1,5 @@
 import { HiOutlineXMark } from "react-icons/hi2";
-import type { Orders } from "../../../types/global";
+import type { OrdersData } from "../../../types/global";
 import { useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "sonner";
@@ -7,7 +7,7 @@ import { ordersApi } from "../../../services/orders";
 
 interface OrderDetailsProps {
     handleClose: () => void
-    orderDetails: Orders | null
+    orderDetails: OrdersData | null
     onUpdate?: () => void; // Callback to refresh user list
 }
 

@@ -6,7 +6,7 @@ import { ModalPop } from '../../components'
 import UpdateOrder from './components/UpdateOrder'
 import OrderDetails from './components/OrderDetails'
 import CancelOrder from './components/CancelOrder'
-import type { Orders } from '../../types/global'
+import type { OrdersData } from '../../types/global'
 import { ordersApi } from '../../services/orders'
 
 type OrderStatus = 'delivered' | 'pending' | 'shipped' | 'cancelled' | 'confirmed'
@@ -27,8 +27,8 @@ const Orders = () => {
   const [openOrderDetails, setOpenOrderDetails] = useState(false)
   const [openUpdateOrder, setOpenUpdateOrder] = useState(false)
   const [openCancelOrder, setOpenCancelOrder] = useState(false)
-   const [selectedOrder, setSelectedOrder] = useState<Orders | null>(null)
-   const [orders, setOrders] = useState<Orders[]>([])
+   const [selectedOrder, setSelectedOrder] = useState<OrdersData | null>(null)
+   const [orders, setOrders] = useState<OrdersData[]>([])
    const [loading, setLoading] = useState(true)
    const [error, setError] = useState<string | null>(null)
    const [totalItems, setTotalItems] = useState(0)
@@ -66,7 +66,7 @@ const Orders = () => {
      setCurrentPage(1)
    }, [search])
 
-   const columns: Column<Orders>[] = [
+   const columns: Column<OrdersData>[] = [
     {
       key: 'id',
       header: 'Order ID',
