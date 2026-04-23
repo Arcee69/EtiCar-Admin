@@ -91,7 +91,6 @@ const UpdateWalletStatus = ({ handleClose, walletDetails, onUpdate }: UpdateWall
                 </div>
 
                 {/* Reason for Action */}
-           
                 <div className="mb-4">
                     <label htmlFor="reason" className="block text-sm font-medium text-NEUTRAL-100 mb-2">
                         Reason
