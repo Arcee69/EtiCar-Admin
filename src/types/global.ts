@@ -198,3 +198,41 @@ export interface Users {
   phone_verified: boolean
   updated_at: string
 }
+
+//Orders related types
+export interface Orders {
+  id: string
+  order_number: string
+  order_number_short: string
+  driver: string
+  driver_phone: string
+  vendor: string
+  vendor_id: string
+  product: string
+  product_summary: string
+  quantity: number
+  total_amount: string
+  total_amount_formatted: string
+  status: string
+  status_label: string
+  status_color: string
+  subtotal: string
+  delivery_fee: string
+  discount_amount: string
+  currency: string
+  notes: string | null
+  items: {
+    product_name: string
+    quantity: string
+    unit_price: string
+    total_price: string
+  }[]
+  delivery_address: string | null
+  created_at: string
+  created_at_human: string
+  confirmed_at: string | null
+  delivered_at: string | null
+  can_update_status: boolean
+  can_cancel: boolean
+  allowed_status_transitions: string[]
+} 

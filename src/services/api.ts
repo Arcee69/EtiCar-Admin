@@ -26,3 +26,7 @@ export const EXPORT_TRANSACTIONS_CSV = '/admin/transactions/export';
 //Users
 export const GET_USERS = '/admin/users';
 export const EXPORT_USERS_CSV = '/admin/users/export';
+
+//Orders
+export const GET_ORDERS = '/admin/orders';
+export const EXPORT_ORDERS_CSV = '/admin/orders/export';
