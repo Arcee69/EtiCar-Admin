@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlineEllipsisVertical } from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
-import type { Wallet, WalletStats } from '../../types/global'
+import type { WalletData, WalletStats } from '../../types/global'
 import { walletApi, type WalletFilters } from '../../services/wallet'
 import { ModalPop } from '../../components'
 import UpdateWalletStatus from './components/UpdateWalletStatus'
@@ -71,12 +71,12 @@ const Wallet = () => {
   const [error, setError] = useState<string | null>(null)
   const [totalItems, setTotalItems] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [wallets, setWallets] = useState<Wallet[]>([])
+  const [wallets, setWallets] = useState<WalletData[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [openUpdateWalletStatus, setOpenUpdateWalletStatus] = useState(false)
-  const [walletDetails, setWalletDetails] = useState<Wallet | null>(null)
+  const [walletDetails, setWalletDetails] = useState<WalletData | null>(null)
   const [openWalletDetails, setOpenWalletDetails] = useState(false)
   const [walletStats, setWalletStats] = useState<WalletStats | null>(null)
 
@@ -145,7 +145,7 @@ const Wallet = () => {
   const totalCredits = walletStats?.total_credits || 0
   const totalDebits = walletStats?.total_debits || 0
 
-  const columns: Column<Wallet>[] = [
+  const columns: Column<WalletData>[] = [
     {
       key: 'name',
       header: 'Name',
