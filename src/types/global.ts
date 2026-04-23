@@ -180,3 +180,21 @@ export interface WalletStats {
   active_wallets: number
   frozen_wallets: number
 }
+
+// User related types
+export interface Users {
+  id: string
+  name: string
+  phone: string
+  email: string
+  registered_at: string
+  registered_at_human: string
+  vehicles_count: string
+  status: string
+  avatar_url: string | null
+  can_deactivate: boolean
+  can_activate: boolean
+  email_verified: boolean
+  phone_verified: boolean
+  updated_at: string
+}

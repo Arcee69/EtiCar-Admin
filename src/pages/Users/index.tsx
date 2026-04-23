@@ -1,51 +1,76 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlineEllipsisVertical } from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
+import type { Users } from '../../types/global'
+import { ModalPop } from '../../components'
+import UserDetails from './components/UserDetails'
+import UpdateUser from './components/UpdateUser'
+import DeactivateUser from './components/DeactivateUser'
+import { usersApi } from '../../services/users'
+import type { UsersFilters } from '../../services/users'
 
-interface User {
-  id: string
-  name: string
-  phone: string
-  email: string
-  registered: string
-  vehicles: number
+type UserStatus = 'active' | 'inactive'
+
+// Using User type from global types
+
+const statusStyles: Record<UserStatus, string> = {
+  active: 'bg-green-100 text-green-700',
+  inactive: 'bg-red-100 text-red-400',
 }
-
-const mockUsers: User[] = [
-  { id: 'U001', name: 'Chukwuemeka Obi', phone: '+234 801 234 5678', email: 'chukwuemeka@email.com', registered: '2026-01-15', vehicles: 2 },
-  { id: 'U002', name: 'Aisha Mohammed', phone: '+234 802 345 6789', email: 'aisha.m@email.com', registered: '2026-01-20', vehicles: 1 },
-  { id: 'U003', name: 'Oluwaseun Adeyemi', phone: '+234 803 456 7890', email: 'seun.a@email.com', registered: '2026-02-01', vehicles: 3 },
-  { id: 'U004', name: 'Fatima Bello', phone: '+234 804 567 8901', email: 'fatima.b@email.com', registered: '2026-02-10', vehicles: 1 },
-  { id: 'U005', name: 'Damilola Ogundimu', phone: '+234 805 678 9012', email: 'damilola@email.com', registered: '2026-02-15', vehicles: 2 },
-  { id: 'U006', name: 'Ibrahim Yusuf', phone: '+234 806 789 0123', email: 'ibrahim.y@email.com', registered: '2026-02-20', vehicles: 1 },
-  { id: 'U007', name: 'Ngozi Eze', phone: '+234 807 890 1234', email: 'ngozi.e@email.com', registered: '2026-03-01', vehicles: 2 },
-  { id: 'U008', name: 'Tunde Bakare', phone: '+234 808 901 2345', email: 'tunde.b@email.com', registered: '2026-03-05', vehicles: 1 },
-  { id: 'U009', name: 'Amaka Okafor', phone: '+234 809 012 3456', email: 'amaka.o@email.com', registered: '2026-03-10', vehicles: 3 },
-  { id: 'U010', name: 'Emeka Nwosu', phone: '+234 810 123 4567', email: 'emeka.n@email.com', registered: '2026-03-12', vehicles: 2 },
-]
 
 const Users = () => {
   const [search, setSearch] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [openUserDetails, setOpenUserDetails] = useState(false)
+  const [openUpdateUser, setOpenUpdateUser] = useState(false)
+  const [openDeactivateUser, setOpenDeactivateUser] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<Users | null>(null)
+  const [users, setUsers] = useState<Users[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [totalItems, setTotalItems] = useState(0)
 
-  const filtered = mockUsers.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.phone.includes(search) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
-  )
+  // Fetch users from API
+  const fetchUsers = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-  const totalItems = filtered.length
-  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+      const filters: UsersFilters = {
+        search: search || undefined,
+        per_page: itemsPerPage,
+      }
 
-  const columns: Column<User>[] = [
+      const response = await usersApi.getUsers(filters)
+      setUsers(response.data)
+      setTotalItems(response.total)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch users')
+      setUsers([])
+      setTotalItems(0)
+    } finally {
+      setLoading(false)
+    }
+  }, [search, itemsPerPage])
+
+  useEffect(() => {
+    fetchUsers()
+  }, [fetchUsers])
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+
+  const columns: Column<Users>[] = [
     {
       key: 'id',
       header: 'ID',
-      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.id}</span>,
+      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.id.slice(0, 8)}</span>,
     },
     {
       key: 'name',
@@ -63,20 +88,32 @@ const Users = () => {
       render: (item) => <span className="text-NEUTRAL-100">{item.email}</span>,
     },
     {
+      key: 'status',
+      header: 'Status',
+      render: (item) => {
+        const status = item.status as UserStatus
+        return (
+          <span className={`inline-flex items-center px-2.5 py-0.5 capitalize rounded-full text-xs font-medium ${statusStyles[status]}`}>
+            {item.status}
+          </span>
+        )
+      },
+    },
+    {
       key: 'registered',
-      header: 'Registered',
-      render: (item) => <span className="text-NEUTRAL-100">{item.registered}</span>,
+      header: 'Registered On',
+      render: (item) => <span className="text-NEUTRAL-100">{item.registered_at}</span>,
     },
     {
       key: 'vehicles',
       header: 'Vehicles',
-      render: (item) => <span className="text-NEUTRAL-100">{item.vehicles}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.vehicles_count}</span>,
     },
   ]
 
   const handleExportCSV = () => {
     const headers = ['ID', 'Name', 'Phone', 'Email', 'Registered', 'Vehicles']
-    const rows = filtered.map((u) => [u.id, u.name, u.phone, u.email, u.registered, u.vehicles])
+    const rows = users.map((u) => [u.id, u.name, u.phone, u.email, u.registered_at, u.vehicles_count])
     const csv = [headers, ...rows].map((r) => r.join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -99,7 +136,7 @@ const Users = () => {
             type="text"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1) }}
-            placeholder="Search by name, phone, or email..."
+            placeholder="Search by name..."
             className="w-full pl-10 pr-4 py-2.5 border border-GREY-100 rounded-lg text-sm text-NEUTRAL-100 placeholder:text-GREY-200 focus:outline-none focus:ring-2 focus:ring-BLUE-400 focus:border-transparent bg-white"
           />
         </div>
@@ -118,8 +155,8 @@ const Users = () => {
       <div className="bg-white rounded-xl border border-GREY-100 overflow-hidden">
         <Table
           columns={columns}
-          data={paginated}
-          emptyMessage="No users found"
+          data={users}
+          emptyMessage={loading ? "Loading users..." : error ? "Error loading users" : "No users found"}
           renderActions={(item) => (
             <div className="relative">
               <button
@@ -139,22 +176,38 @@ const Users = () => {
                 >
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={() => {
+                      setSelectedUser(item); 
+                      setOpenUserDetails(true); 
+                      setOpenMenuId(null)
+                    }}
                   >
                     View Details
                   </button>
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={() => {
+                      setSelectedUser(item);
+                      setOpenUpdateUser(true);
+                      setOpenMenuId(null);
+                    }}
                   >
                     Edit User
                   </button>
-                  <button
-                    className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
-                  >
-                    Deactivate
-                  </button>
+                  {
+                    item.status === 'active' && (
+                    <button
+                      className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
+                      onClick={() => {
+                        setSelectedUser(item);
+                        setOpenDeactivateUser(true);
+                        setOpenMenuId(null);
+                      }}
+                    >
+                      Deactivate
+                    </button>
+                    )
+                  }
                 </div>
               )}
             </div>
@@ -180,6 +233,31 @@ const Users = () => {
           onClick={() => setOpenMenuId(null)}
         />
       )}
+
+      <ModalPop isOpen={openUserDetails}>
+        <UserDetails 
+          handleClose={() => setOpenUserDetails(false)}
+          userDetails={selectedUser}
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={openUpdateUser}>
+        <UpdateUser 
+          handleClose={() => setOpenUpdateUser(false)}
+          userDetails={selectedUser}
+          onUpdate={fetchUsers} 
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={openDeactivateUser}>
+        <DeactivateUser 
+          handleClose={() => setOpenDeactivateUser(false)}
+          userDetails={selectedUser}
+          onUpdate={fetchUsers}
+        />
+      </ModalPop>
+
+
     </div>
   )
 }

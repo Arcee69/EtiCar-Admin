@@ -22,3 +22,7 @@ export const EXPORT_WALLET_CSV = '/admin/wallets/export';
 //Transactions
 export const GET_TRANSACTIONS = '/admin/transactions';
 export const EXPORT_TRANSACTIONS_CSV = '/admin/transactions/export';
+
+//Users
+export const GET_USERS = '/admin/users';
+export const EXPORT_USERS_CSV = '/admin/users/export';
