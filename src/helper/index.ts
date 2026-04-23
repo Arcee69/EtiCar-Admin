@@ -8,5 +8,7 @@ export function getInitials(full_name: string | undefined): string {
       .slice(0, 2)
   }
 
-export const formatNaira = (amount: number) =>
-  `₦${amount.toLocaleString('en-NG')}`
+export const formatNaira = (amount: number | string) => {
+  const value = typeof amount === 'string' ? Number(amount) : amount
+  return `₦${value.toLocaleString('en-NG')}`
+}

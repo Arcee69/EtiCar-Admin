@@ -1,44 +1,26 @@
-import { useState } from 'react'
-import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray } from 'react-icons/hi2'
+import { useCallback, useEffect, useState } from 'react'
+import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlineEllipsisVertical } from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
+import type { Wallet, WalletStats } from '../../types/global'
+import { walletApi, type WalletFilters } from '../../services/wallet'
+import { ModalPop } from '../../components'
+import UpdateWalletStatus from './components/UpdateWalletStatus'
+import WalletDetails from './components/WalletDetails'
+import { formatNaira } from '../../helper'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type WalletStatus = 'Active' | 'In-Progress' | 'Pending'
+type WalletStatus = 'active' | 'frozen' | 'pending'
 
-interface WalletBalance {
-  id: string
-  name: string
-  type: WalletStatus
-  balance: number
-  lastTransaction: string
-}
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
-const mockWallets: WalletBalance[] = [
-  { id: 'W001', name: 'Chukwuemeka Obi',     type: 'Active',      balance: 45000,   lastTransaction: '2026-03-07' },
-  { id: 'W002', name: 'AutoFix Lagos',        type: 'In-Progress', balance: 245000,  lastTransaction: '2026-03-07' },
-  { id: 'W003', name: 'Amara Parts',          type: 'Pending',     balance: 890000,  lastTransaction: '2026-03-06' },
-  { id: 'W004', name: 'QuickTyre Services',   type: 'In-Progress', balance: 128000,  lastTransaction: '2026-03-07' },
-  { id: 'W005', name: 'Capital Spares',       type: 'Pending',     balance: 1250000, lastTransaction: '2026-03-07' },
-  { id: 'W006', name: 'Aisha Mohammed',       type: 'Active',      balance: 12000,   lastTransaction: '2026-03-06' },
-  { id: 'W007', name: 'Northern Auto Supply', type: 'Pending',     balance: 456000,  lastTransaction: '2026-03-05' },
-]
 
 // ─── Style Maps ───────────────────────────────────────────────────────────────
 
 const walletStatusStyles: Record<WalletStatus, string> = {
-  'Active':      'bg-teal-50 text-teal-600 border border-teal-200',
-  'In-Progress': 'bg-blue-50 text-blue-500 border border-blue-200',
-  'Pending':     'bg-orange-50 text-orange-500 border border-orange-200',
+  'active': 'bg-teal-50 text-teal-600 border border-teal-200',
+  'frozen': 'bg-red-50 text-red-600 border border-red-200',
+  'pending': 'bg-orange-50 text-orange-500 border border-orange-200',
 }
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const formatNaira = (amount: number) =>
-  `₦${amount.toLocaleString('en-NG')}`
 
 // ─── Summary Card ─────────────────────────────────────────────────────────────
 
@@ -53,20 +35,18 @@ interface SummaryCardProps {
 
 const SummaryCard = ({ label, value, dark, icon, arrowUp, arrowDown }: SummaryCardProps) => (
   <div
-    className={`flex-1 min-w-[180px] rounded-xl p-5 flex items-center justify-between gap-4 border ${
-      dark
+    className={`flex-1 min-w-45 rounded-xl p-5 flex items-center justify-between gap-4 border ${dark
         ? 'bg-NEUTRAL-300 border-NEUTRAL-200 text-white'
         : 'bg-white border-GREY-100 text-NEUTRAL-100'
-    }`}
+      }`}
   >
     <div>
       <p className={`text-sm mb-1 ${dark ? 'text-white/70' : 'text-GREY-200'}`}>{label}</p>
       <p className={`text-2xl font-bold ${dark ? 'text-white' : 'text-NEUTRAL-100'}`}>{value}</p>
     </div>
     <div
-      className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-        dark ? 'bg-white/10' : 'bg-GREY-300'
-      }`}
+      className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${dark ? 'bg-white/10' : 'bg-GREY-300'
+        }`}
     >
       {icon ?? (
         arrowUp ? (
@@ -87,37 +67,95 @@ const SummaryCard = ({ label, value, dark, icon, arrowUp, arrowDown }: SummaryCa
 
 const Wallet = () => {
   const [search, setSearch] = useState('')
+  // const [statusFilter, setStatusFilter] = useState<'active' | 'pending' | 'suspended' | ''>('')
+  const [error, setError] = useState<string | null>(null)
+  const [totalItems, setTotalItems] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [wallets, setWallets] = useState<Wallet[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [openUpdateWalletStatus, setOpenUpdateWalletStatus] = useState(false)
+  const [walletDetails, setWalletDetails] = useState<Wallet | null>(null)
+  const [openWalletDetails, setOpenWalletDetails] = useState(false)
+  const [walletStats, setWalletStats] = useState<WalletStats | null>(null)
 
-  const filtered = mockWallets.filter(
-    (w) =>
-      w.name.toLowerCase().includes(search.toLowerCase()) ||
-      w.type.toLowerCase().includes(search.toLowerCase())
-  )
 
-  const totalItems = filtered.length
-  const paginated = filtered.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
+   // Fetch wallets from API
+    const fetchWallets = useCallback(async () => {
+      try {
+        setLoading(true)
+        setError(null)
+  
+        const filters: WalletFilters = {
+          search: search || undefined,
+          // status: statusFilter || undefined,
+          // per_page: itemsPerPage,
+        }
+  
+        const response = await walletApi.getWallets(filters)
+        setWallets(response.data)
+        setTotalItems(response.total)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch wallets')
+        setWallets([])
+        setTotalItems(0)
+      } finally {
+        setLoading(false)
+      }
+    }, [search,  currentPage, itemsPerPage])
+  
+    useEffect(() => {
+      fetchWallets()
+    }, [fetchWallets])
+  
+    // Reset to page 1 when filters change
+    useEffect(() => {
+      setCurrentPage(1)
+    }, [search]) //statusFilter
+  
+    // const handleItemsPerPageChange = (value: number) => {
+    //   setItemsPerPage(value)
+    //   setCurrentPage(1)
+    // }
+
+
+  //Fetch Wallet Stats from API
+  const fetchWalletStats = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const response = await walletApi.getWalletStats()
+      setWalletStats(response)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch wallet stats')
+      setWalletStats(null)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchWalletStats()
+  }, [fetchWalletStats])
 
   // Summary totals
-  const totalBalance = mockWallets.reduce((s, w) => s + w.balance, 0)
-  const totalCredits = 230250   // representative mock value
-  const totalDebits  = 23200    // representative mock value
+  const totalBalance = walletStats?.total_balance || 0
+  const totalCredits = walletStats?.total_credits || 0
+  const totalDebits = walletStats?.total_debits || 0
 
-  const columns: Column<WalletBalance>[] = [
+  const columns: Column<Wallet>[] = [
     {
       key: 'name',
       header: 'Name',
-      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.name}</span>,
+      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.user.name}</span>,
     },
     {
       key: 'type',
       header: 'Type',
       render: (item) => (
-        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${walletStatusStyles[item.type]}`}>
+        <span className={`inline-flex items-center px-3 py-1 capitalize rounded-full text-xs font-medium ${walletStatusStyles[item.type as WalletStatus]}`}>
           {item.type}
         </span>
       ),
@@ -128,15 +166,20 @@ const Wallet = () => {
       render: (item) => <span className="text-NEUTRAL-100">{formatNaira(item.balance)}</span>,
     },
     {
+      key: 'is_frozen',
+      header: 'Wallet Frozen',
+      render: (item) => <span className="text-NEUTRAL-100">{item.is_frozen ? 'Yes' : 'No'}</span>,
+    },
+    {
       key: 'lastTransaction',
       header: 'Last Transaction',
-      render: (item) => <span className="text-NEUTRAL-100">{item.lastTransaction}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.last_transaction}</span>,
     },
   ]
 
   const handleExportCSV = () => {
     const headers = ['Name', 'Type', 'Balance', 'Last Transaction']
-    const rows = filtered.map((w) => [w.name, w.type, w.balance, w.lastTransaction])
+    const rows = wallets.map((w) => [w.user.name, w.type, w.balance, w.last_transaction])
     const csv = [headers, ...rows].map((r) => r.join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -207,8 +250,62 @@ const Wallet = () => {
         <div className="bg-white rounded-xl border border-GREY-100 overflow-hidden">
           <Table
             columns={columns}
-            data={paginated}
-            emptyMessage="No wallets found"
+            data={wallets}
+            emptyMessage={loading ? "Loading wallets..." : error ? "Error loading wallets" : "No wallets found"} 
+            renderActions={(item) => (
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setOpenMenuId(openMenuId === item.id ? null : item.id)
+                  }}
+                  className="p-1.5 rounded-lg text-GREY-200 hover:bg-GREY-300 hover:text-NEUTRAL-100 transition-colors"
+                >
+                  <HiOutlineEllipsisVertical className="w-5 h-5" />
+                </button>
+
+                {openMenuId === item.id && (
+                  <div
+                    className="absolute right-0 top-8 bg-white border border-GREY-100 rounded-lg shadow-lg z-20 min-w-36 py-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
+                      onClick={() => {
+                        setOpenMenuId(null)
+                        setOpenWalletDetails(true)
+                        setWalletDetails(item)
+                      }}
+                    >
+                      View Details
+                    </button>
+                    {item.is_frozen ? (
+                      <button
+                        className="w-full px-4 py-2 text-sm text-left text-green-500 hover:bg-GREY-300 transition-colors"
+                        onClick={() => {
+                          setOpenMenuId(null)
+                          setOpenUpdateWalletStatus(true)
+                          setWalletDetails(item)
+                        }}
+                      >
+                        Unfreeze Wallet
+                      </button>
+                    ) : (
+                      <button
+                        className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
+                        onClick={() => {
+                          setOpenMenuId(null)
+                          setOpenUpdateWalletStatus(true)
+                          setWalletDetails(item)
+                        }}
+                      >
+                        Freeze Wallet
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           />
           <div className="px-4 border-t border-GREY-100">
             <Pagination
@@ -221,6 +318,21 @@ const Wallet = () => {
           </div>
         </div>
       </section>
+
+      <ModalPop isOpen={openUpdateWalletStatus}>
+        <UpdateWalletStatus
+          handleClose={() => setOpenUpdateWalletStatus(false)}
+          walletDetails={walletDetails}
+          onUpdate={fetchWallets}
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={openWalletDetails}>
+        <WalletDetails
+          handleClose={() => setOpenWalletDetails(false)}
+          walletDetails={walletDetails}
+        />
+      </ModalPop>
 
     </div>
   )

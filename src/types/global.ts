@@ -140,3 +140,43 @@ export interface Transaction {
   created_at: string
   updated_at: string
 }
+
+//Wallet related types
+export interface Wallet {
+  id: string
+  user_id: string
+  user: {
+    name: string
+    email: string
+    phone: string
+    type: string
+    type_label: string
+    is_deleted: boolean
+    provider_verification: string
+  }
+  type: string
+  type_label: string
+  type_color: string
+  balance: string
+  balance_formatted: string
+  ledger_balance: string
+  ledger_balance_formatted: string
+  currency: string
+  is_frozen: boolean
+  last_transaction: string
+  last_transaction_at: string
+  transactions_count: string
+  created_at: string
+  created_at_formatted: string
+}
+export interface WalletStats {
+  total_balance: number
+  total_balance_formatted: string
+  total_credits: number
+  total_credits_formatted: string
+  total_debits: number
+  total_debits_formatted: string
+  total_wallets: number
+  active_wallets: number
+  frozen_wallets: number
+}

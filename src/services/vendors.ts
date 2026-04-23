@@ -1,4 +1,5 @@
 import type { Vendor } from '../types/global'
+import { LIST_VENDORS } from './api'
 import apiInstance from './instance'
 
 
@@ -31,31 +32,31 @@ export const vendorApi = {
     if (filters.per_page) params.append('per_page', filters.per_page?.toString() || '10')
     if (filters.page) params.append('page', filters.page.toString())
 
-    const response = await apiInstance.get(`/admin/vendors?${params.toString()}`)
+    const response = await apiInstance.get(`${LIST_VENDORS}?${params.toString()}`)
     return response.data
   },
 
   // Get single vendor by ID
   getVendor: async (id: string): Promise<Vendor> => {
-    const response = await apiInstance.get(`/admin/vendors/${id}`)
+    const response = await apiInstance.get(`${LIST_VENDORS}/${id}`)
     return response.data.data
   },
 
   // Update vendor
   updateVendor: async (id: string, data: Partial<Vendor>): Promise<Vendor> => {
-    const response = await apiInstance.put(`/admin/vendors/${id}`, data)
+    const response = await apiInstance.put(`${LIST_VENDORS}/${id}`, data)
     return response.data.data
   },
 
   // Update vendor status
   updateVendorStatus: async (id: string, status: 'activate' | 'suspend'): Promise<Vendor> => {
-    const response = await apiInstance.post(`/admin/vendors/${id}/${status}`)
+    const response = await apiInstance.post(`${LIST_VENDORS}/${id}/${status}`)
     return response.data.data
   },
 
   // Delete vendor
   deleteVendor: async (id: string): Promise<void> => {
-    await apiInstance.delete(`/admin/vendors/${id}`)
+    await apiInstance.delete(`${LIST_VENDORS}/${id}`)
   },
 }
 

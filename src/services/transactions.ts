@@ -1,4 +1,5 @@
 import type { Transaction } from "../types/global"
+import { GET_TRANSACTIONS } from "./api"
 import apiInstance from "./instance"
 
 
@@ -30,13 +31,13 @@ export const transactionsApi = {
     if (filters.type) params.append('type', filters.type)
     if (filters.per_page) params.append('per_page', filters.per_page?.toString() || '10')
 
-    const response = await apiInstance.get(`/admin/transactions?${params.toString()}`)
+    const response = await apiInstance.get(`${GET_TRANSACTIONS}?${params.toString()}`)
     return response.data
   },
 
   // Get single transaction by ID
   getTransaction: async (id: string): Promise<Transaction> => {
-    const response = await apiInstance.get(`/admin/transactions/${id}`)
+    const response = await apiInstance.get(`${GET_TRANSACTIONS}/${id}`)
     return response.data.data
   },
 
