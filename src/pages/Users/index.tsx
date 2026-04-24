@@ -75,7 +75,7 @@ const Users = () => {
     {
       key: 'name',
       header: 'Name',
-      render: (item) => <span className="text-NEUTRAL-100">{item.name}</span>,
+      render: (item) => <span className="text-NEUTRAL-100 capitalize">{item.name}</span>,
     },
     {
       key: 'phone',
