@@ -1,239 +1,93 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineArrowDownTray,
   HiOutlineEllipsisVertical,
+  HiOutlineFunnel,
 } from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
 import { ModalPop } from '../../components'
-import ViewDetails from './components/ViewDetails'
-import type { Provider } from '../../types/global'
+import ViewProviderDetails from './components/ViewProviderDetails'
+import UpdateProvider from './components/UpdateProvider'
+import VerifyProvider from './components/VerifyProvider'
+import DeactivateProvider from './components/DeactivateProvider'
+import { providersApi, type ProvidersFilters } from '../../services/providers'
+import type { ProvidersData } from '../../types/global'
 
+type ProviderStatus = 'pending' | 'verified' | 'declined' | ''
 
-const mockProviders: Provider[] = [
-  {
-    id: 'P001',
-    name: 'AutoFix Lagos',
-    phone: '+234 810 111 2222',
-    services: ['Mechanic', 'Electrical'],
-    city: 'Lagos',
-    activeJobs: 3,
-    completed: 87,
-    wallet: '₦245,000',
-    email: 'support@autofixlagos.ng',
-    registrationDate: '2025-03-12',
-    businessType: 'Workshop',
-    status: 'Pending',
-    documents: {
-      idCard: 'National ID - Yusuf Adewale',
-      businessRegistration: 'CAC RC 1358821',
-      addressProof: 'PHCN Utility Bill - March 2026',
-    },
-  },
-  {
-    id: 'P002',
-    name: 'QuickTyre Services',
-    phone: '+234 810 222 3333',
-    services: ['Tyre Change', 'Wheel Alignment'],
-    city: 'Lagos',
-    activeJobs: 1,
-    completed: 45,
-    wallet: '₦120,500',
-    email: 'hello@quicktyre.ng',
-    registrationDate: '2025-05-21',
-    businessType: 'Mobile Unit',
-    status: 'Verified',
-    documents: {
-      idCard: 'Driver License - Chinedu Obi',
-      businessRegistration: 'CAC BN 9876124',
-      addressProof: 'Tenancy Agreement - Ikeja Office',
-    },
-  },
-  {
-    id: 'P003',
-    name: 'AbujaMech Pro',
-    phone: '+234 810 333 4444',
-    services: ['Mechanic', 'Oil Change'],
-    city: 'Abuja',
-    activeJobs: 2,
-    completed: 62,
-    wallet: '₦180,000',
-    email: 'admin@abujamechpro.com',
-    registrationDate: '2025-07-02',
-    businessType: 'Workshop',
-    status: 'Pending',
-    documents: {
-      idCard: 'Voter Card - Amina Bello',
-      businessRegistration: 'CAC RC 5542176',
-      addressProof: 'Water Bill - Wuse 2 Branch',
-    },
-  },
-  {
-    id: 'P004',
-    name: 'Kano Auto Care',
-    phone: '+234 810 444 5555',
-    services: ['Body Work', 'Painting'],
-    city: 'Kano',
-    activeJobs: 0,
-    completed: 23,
-    wallet: '₦67,500',
-    email: 'service@kanoautocare.ng',
-    registrationDate: '2025-08-10',
-    businessType: 'Workshop',
-    status: 'Declined',
-    documents: {
-      idCard: 'National ID - Suleiman Idris',
-      businessRegistration: 'CAC RC 8021135',
-      addressProof: 'Shop Rent Receipt - Zaria Road',
-    },
-  },
-  {
-    id: 'P005',
-    name: 'Ibadan Express Fix',
-    phone: '+234 810 555 6666',
-    services: ['AC Repair', 'Electrical'],
-    city: 'Ibadan',
-    activeJobs: 4,
-    completed: 110,
-    wallet: '₦320,000',
-    email: 'care@ibadanexpressfix.ng',
-    registrationDate: '2025-09-15',
-    businessType: 'Mobile Unit',
-    status: 'Pending',
-    documents: {
-      idCard: 'National ID - Tunde Alao',
-      businessRegistration: 'CAC BN 3197721',
-      addressProof: 'Bank Statement - Business Address',
-    },
-  },
-  {
-    id: 'P006',
-    name: 'Port Harcourt Motors',
-    phone: '+234 810 666 7777',
-    services: ['Mechanic', 'Tyre Change'],
-    city: 'Port Harcourt',
-    activeJobs: 2,
-    completed: 78,
-    wallet: '₦215,000',
-    email: 'ops@phmotors.ng',
-    registrationDate: '2025-10-05',
-    businessType: 'Workshop',
-    status: 'Verified',
-    documents: {
-      idCard: 'Driver License - Ebikeme Johnson',
-      businessRegistration: 'CAC RC 7712349',
-      addressProof: 'Utility Bill - GRA Workshop',
-    },
-  },
-  {
-    id: 'P007',
-    name: 'Enugu Auto Hub',
-    phone: '+234 810 777 8888',
-    services: ['Oil Change', 'Brake Service'],
-    city: 'Enugu',
-    activeJobs: 1,
-    completed: 34,
-    wallet: '₦95,000',
-    email: 'team@enuguautohub.ng',
-    registrationDate: '2025-10-29',
-    businessType: 'Workshop',
-    status: 'Pending',
-    documents: {
-      idCard: 'National ID - Chinwe Okafor',
-      businessRegistration: 'CAC BN 4499820',
-      addressProof: 'Landlord Attestation - Ogui Road',
-    },
-  },
-  {
-    id: 'P008',
-    name: 'Warri Speed Garage',
-    phone: '+234 810 888 9999',
-    services: ['Mechanic', 'Body Work'],
-    city: 'Warri',
-    activeJobs: 3,
-    completed: 56,
-    wallet: '₦158,000',
-    email: 'info@warrispeedgarage.ng',
-    registrationDate: '2025-11-11',
-    businessType: 'Workshop',
-    status: 'Pending',
-    documents: {
-      idCard: 'Voter Card - Efe Omoruyi',
-      businessRegistration: 'CAC RC 9834101',
-      addressProof: 'Insurance Letter - Facility Address',
-    },
-  },
-  {
-    id: 'P009',
-    name: 'Benin Auto Works',
-    phone: '+234 810 999 0000',
-    services: ['Electrical', 'AC Repair'],
-    city: 'Benin City',
-    activeJobs: 0,
-    completed: 41,
-    wallet: '₦112,000',
-    email: 'contact@beninautoworks.ng',
-    registrationDate: '2025-11-27',
-    businessType: 'Mobile Unit',
-    status: 'Declined',
-    documents: {
-      idCard: 'National ID - Osaze Eromosele',
-      businessRegistration: 'CAC BN 6654309',
-      addressProof: 'Shop Lease - Ring Road',
-    },
-  },
-  {
-    id: 'P010',
-    name: 'Kaduna Fix It',
-    phone: '+234 811 000 1111',
-    services: ['Mechanic', 'Wheel Alignment'],
-    city: 'Kaduna',
-    activeJobs: 2,
-    completed: 67,
-    wallet: '₦189,500',
-    email: 'hello@kadunafixit.ng',
-    registrationDate: '2025-12-09',
-    businessType: 'Workshop',
-    status: 'Pending',
-    documents: {
-      idCard: 'Driver License - Habib Musa',
-      businessRegistration: 'CAC RC 7102943',
-      addressProof: 'PHCN Bill - Barnawa Workshop',
-    },
-  },
-]
-
-const statusClassMap: Record<Provider['status'], string> = {
-  Pending: 'bg-amber-400/15 text-amber-400 border-amber-400/30',
-  Verified: 'bg-green-400/15 text-green-400 border-green-400/30',
-  Declined: 'bg-red-400/15 text-red-400 border-red-400/30',
+const statusStyles: Record<ProviderStatus, string> = {
+  pending: 'bg-amber-400/15 text-amber-400 border-amber-400/30',
+  verified: 'bg-green-400/15 text-green-400 border-green-400/30',
+  declined: 'bg-red-400/15 text-red-400 border-red-400/30',
+  '': 'bg-gray-100 text-gray-600 border-gray-200',
 }
 
 const Providers = () => {
-  const [providers, setProviders] = useState<Provider[]>(mockProviders)
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<ProviderStatus>('')
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
-  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null)
-  const [showVerificationModal, setShowVerificationModal] = useState(false)
 
-  const filtered = providers.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.city.toLowerCase().includes(search.toLowerCase()) ||
-      p.services.some((s) => s.toLowerCase().includes(search.toLowerCase()))
-  )
+  // Modal states
+  const [selectedProvider, setSelectedProvider] = useState<ProvidersData | null>(null)
+  const [openDeactivateProviderModal, setOpenDeactivateProviderModal] = useState(false)
+  const [openProviderDetailsModal, setOpenProviderDetailsModal] = useState(false)
+  const [openVerificationModal, setOpenVerificationModal] = useState(false)
+  const [openEditProviderModal, setOpenEditProviderModal] = useState(false)
 
-  const totalItems = filtered.length
-  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  // API state
+  const [providers, setProviders] = useState<ProvidersData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [totalItems, setTotalItems] = useState(0)
 
-  const columns: Column<Provider>[] = [
+  // Fetch providers from API
+  const fetchProviders = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const filters: ProvidersFilters = {
+        search: search || undefined,
+        status: statusFilter || undefined,
+        per_page: itemsPerPage,
+        page: currentPage,
+      }
+
+      const response = await providersApi.getProviders(filters)
+      setProviders(response.data)
+      setTotalItems(response.total)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch providers')
+      setProviders([])
+      setTotalItems(0)
+    } finally {
+      setLoading(false)
+    }
+  }, [search, statusFilter, currentPage, itemsPerPage])
+
+  useEffect(() => {
+    fetchProviders()
+  }, [fetchProviders])
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, statusFilter])
+
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value)
+    setCurrentPage(1)
+  }
+
+  const columns: Column<ProvidersData>[] = [
     {
-      key: 'name',
+      key: 'business_name',
       header: 'Name',
-      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.name}</span>,
+      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.business_name}</span>,
     },
     {
       key: 'phone',
@@ -253,60 +107,46 @@ const Providers = () => {
       render: (item) => <span className="text-NEUTRAL-100">{item.city}</span>,
     },
     {
-      key: 'activeJobs',
+      key: 'active_jobs',
       header: 'Active Jobs',
-      render: (item) => <span className="text-NEUTRAL-100">{item.activeJobs}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.active_jobs}</span>,
     },
     {
-      key: 'completed',
+      key: 'completed_jobs',
       header: 'Completed',
-      render: (item) => <span className="text-NEUTRAL-100">{item.completed}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.completed_jobs}</span>,
     },
     {
-      key: 'wallet',
+      key: 'wallet_balance',
       header: 'Wallet',
-      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.wallet}</span>,
+      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.wallet_balance_formatted}</span>,
     },
     {
-      key: 'status',
+      key: 'verification_status',
       header: 'Verification',
-      render: (item) => (
-        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClassMap[item.status]}`}>
-          {item.status}
-        </span>
-      ),
+      render: (item) => {
+        const statusKey = (item.verification_status || '').toLowerCase() as ProviderStatus
+        return (
+          <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusStyles[statusKey] || statusStyles['']}`}>
+            {item.verification_status_label || item.verification_status}
+          </span>
+        )
+      },
     },
   ]
 
-  const openVerificationModal = (provider: Provider) => {
-    setSelectedProvider(provider)
-    setShowVerificationModal(true)
-    setOpenMenuId(null)
-  }
-
-  const closeVerificationModal = () => {
-    setShowVerificationModal(false)
-    setSelectedProvider(null)
-  }
-
-  const updateVerificationStatus = (id: string, status: string) => {
-    setProviders((prev) =>
-      prev.map((provider) =>
-        provider.id === id
-          ? {
-              ...provider,
-              status: status as Provider['status'],
-            }
-          : provider
-      )
-    )
-
-    closeVerificationModal()
-  }
-
   const handleExportCSV = () => {
-    const headers = ['Name', 'Phone', 'Services', 'City', 'Active Jobs', 'Completed', 'Wallet']
-    const rows = filtered.map((p) => [p.name, p.phone, p.services.join(' | '), p.city, p.activeJobs, p.completed, p.wallet])
+    const headers = ['Name', 'Phone', 'Services', 'City', 'Active Jobs', 'Completed', 'Wallet', 'Verification']
+    const rows = providers.map((p) => [
+      p.business_name,
+      p.phone,
+      p.services.join(' | '),
+      p.city,
+      p.active_jobs,
+      p.completed_jobs,
+      p.wallet_balance_formatted,
+      p.verification_status
+    ])
     const csv = [headers, ...rows].map((r) => r.join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -315,6 +155,28 @@ const Providers = () => {
     a.download = 'providers.csv'
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleVerify = async (id: string, status: 'Verified' | 'Declined') => {
+    try {
+      await providersApi.verifyProvider(id, { verification_status: status })
+      fetchProviders()
+    } catch (err) {
+      console.error('Failed to verify provider:', err)
+    }
+  }
+
+  const handleDeactivate = async (id: string) => { //, reason: string
+    try {
+      await providersApi.deactivateProvider(id) //, reason
+      fetchProviders()
+    } catch (err) {
+      console.error('Failed to deactivate provider:', err)
+    }
+  }
+
+  const handleUpdate = async () => {
+    fetchProviders()
   }
 
   return (
@@ -344,12 +206,30 @@ const Providers = () => {
         </button>
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        {/* Status Filter */}
+        <div className="relative">
+          <HiOutlineFunnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-GREY-200" />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as ProviderStatus)}
+            className="pl-9 pr-4 py-2 border border-GREY-100 rounded-lg text-sm text-NEUTRAL-100 bg-white focus:outline-none focus:ring-2 focus:ring-BLUE-400 focus:border-transparent appearance-none"
+          >
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="verified">Verified</option>
+            <option value="declined">Declined</option>
+          </select>
+        </div>
+      </div>
+
       {/* Table */}
       <div className="bg-white rounded-xl border border-GREY-100 overflow-hidden">
         <Table
           columns={columns}
-          data={paginated}
-          emptyMessage="No providers found"
+          data={providers}
+          emptyMessage={loading ? "Loading providers..." : error ? "Error loading providers" : "No providers found"}
           renderActions={(item) => (
             <div className="relative">
               <button
@@ -369,28 +249,53 @@ const Providers = () => {
                 >
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => openVerificationModal(item)}
+                    onClick={() => {
+                      setOpenMenuId(null)
+                      setOpenProviderDetailsModal(true)
+                      setSelectedProvider(item)
+                    }}
                   >
                     View Details
                   </button>
+                  {item.can_verify !== false && (
+                    <button
+                      className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
+                      onClick={() => {
+                        setOpenMenuId(null)
+                        setOpenVerificationModal(true)
+                        setSelectedProvider(item)
+                      }}
+                    >
+                      Verify Provider
+                    </button>
+                  )}
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={() => {
+                      setOpenMenuId(null)
+                      setOpenEditProviderModal(true)
+                      setSelectedProvider(item)
+                    }}
                   >
                     Edit Provider
                   </button>
-                  <button
-                    className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
-                  >
-                    Deactivate
-                  </button>
+                  {item.can_deactivate !== false && (
+                    <button
+                      className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
+                      onClick={() => {
+                        setOpenMenuId(null)
+                        setOpenDeactivateProviderModal(true)
+                        setSelectedProvider(item)
+                      }}
+                    >
+                      Deactivate
+                    </button>
+                  )}
                 </div>
               )}
             </div>
           )}
         />
-
         {/* Pagination */}
         <div className="px-4 border-t border-GREY-100">
           <Pagination
@@ -398,7 +303,7 @@ const Providers = () => {
             totalItems={totalItems}
             itemsPerPage={itemsPerPage}
             onPageChange={setCurrentPage}
-            onItemsPerPageChange={(val) => { setItemsPerPage(val); setCurrentPage(1) }}
+            onItemsPerPageChange={handleItemsPerPageChange}
           />
         </div>
       </div>
@@ -411,12 +316,42 @@ const Providers = () => {
         />
       )}
 
-      <ModalPop isOpen={showVerificationModal} closeModal={closeVerificationModal}>
-        <ViewDetails 
+      <ModalPop isOpen={openProviderDetailsModal}>
+        <ViewProviderDetails
           selectedProvider={selectedProvider}
-          closeVerificationModal={closeVerificationModal}
-          updateVerificationStatus={updateVerificationStatus}
-          statusClassMap={statusClassMap}
+          handleClose={() => setOpenProviderDetailsModal(false)}
+          statusClassMap={statusStyles}
+        />
+      </ModalPop>
+      <ModalPop isOpen={openVerificationModal}>
+        <VerifyProvider
+          selectedProvider={selectedProvider}
+          handleClose={() => setOpenVerificationModal(false)}
+          onConfirm={(status) => {
+            if (selectedProvider) {
+              handleVerify(selectedProvider.id, status)
+              setOpenVerificationModal(false)
+            }
+          }}
+        />
+      </ModalPop>
+      <ModalPop isOpen={openEditProviderModal}>
+        <UpdateProvider
+          selectedProvider={selectedProvider}
+          handleClose={() => setOpenEditProviderModal(false)}
+          onUpdate={handleUpdate}
+        />
+      </ModalPop>
+      <ModalPop isOpen={openDeactivateProviderModal}>
+        <DeactivateProvider
+          selectedProvider={selectedProvider}
+          handleClose={() => setOpenDeactivateProviderModal(false)}
+          onConfirm={() => { //reason
+            if (selectedProvider) {
+              handleDeactivate(selectedProvider.id) //, reason
+              setOpenDeactivateProviderModal(false)
+            }
+          }}
         />
       </ModalPop>
     </div>

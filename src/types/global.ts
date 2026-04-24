@@ -95,25 +95,25 @@ export interface DeleteInventoryProps {
 }
 
 //Provider related types
-export interface Provider {
-  id: string
-  name: string
-  phone: string
-  services: string[]
-  city: string
-  activeJobs: number
-  completed: number
-  wallet: string
-  email: string
-  registrationDate: string
-  businessType: string
-  status: 'Pending' | 'Verified' | 'Declined'
-  documents: {
-    idCard: string
-    businessRegistration: string
-    addressProof: string
-  }
-}
+// export interface Provider {
+//   id: string
+//   name: string
+//   phone: string
+//   services: string[]
+//   city: string
+//   activeJobs: number
+//   completed: number
+//   wallet: string
+//   email: string
+//   registrationDate: string
+//   businessType: string
+//   status: 'Pending' | 'Verified' | 'Declined'
+//   documents: {
+//     idCard: string
+//     businessRegistration: string
+//     addressProof: string
+//   }
+// }
 
 
 // Transaction related types
@@ -236,3 +236,70 @@ export interface OrdersData {
   can_cancel: boolean
   allowed_status_transitions: string[]
 } 
+
+//Provider related types
+export interface ProvidersData {
+  id: string
+  business_name: string
+  business_address?: string
+  cac_number?: string
+  service_area_id?: number
+  latitude?: number
+  longitude?: number
+  phone: string
+  services: string[]
+  service_types: string[]
+  city: string
+  active_jobs: string
+  completed_jobs: string
+  wallet_balance: number
+  wallet_balance_formatted: string
+  verification_status: string
+  verification_status_label: string
+  verification_status_color: string
+  rating: number
+  total_reviews: string
+  is_open: boolean
+  is_online: boolean
+  can_verify: boolean
+  can_decline: boolean
+  can_deactivate: boolean
+  can_activate: boolean
+  operating_hours?: {
+    monday?: { open: string | null; close: string | null }
+    tuesday?: { open: string | null; close: string | null }
+    wednesday?: { open: string | null; close: string | null }
+    thursday?: { open: string | null; close: string | null }
+    friday?: { open: string | null; close: string | null }
+    saturday?: { open: string | null; close: string | null }
+    sunday?: { open: string | null; close: string | null }
+  }
+  created_at: string
+  updated_at: string
+}
+
+// Service Requests related types
+export interface ServiceRequestData {
+  id: string
+  request_id_short: string
+  driver: string
+  driver_phone: string
+  vehicle: string
+  service_type: string
+  provider: string
+  provider_id: string | null
+  status: string
+  status_label: string
+  status_color: string
+  quoted_price: string
+  quoted_price_formatted: string
+  scheduled_at: string
+  scheduled_at_human: string
+  created_at: string
+  created_at_human: string
+  notes: string | null
+  cancellation_reason: string | null
+  can_assign_provider: boolean
+  can_cancel: boolean
+  address: string | null
+}

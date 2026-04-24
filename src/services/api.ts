@@ -30,3 +30,11 @@ export const EXPORT_USERS_CSV = '/admin/users/export';
 //Orders
 export const GET_ORDERS = '/admin/orders';
 export const EXPORT_ORDERS_CSV = '/admin/orders/export';
+
+//Providers
+export const GET_PROVIDERS = '/admin/providers';
+export const EXPORT_PROVIDERS_CSV = '/admin/providers/export';
+
+//Service Requests
+export const GET_SERVICE_REQUESTS = '/admin/service-requests';
+export const EXPORT_SERVICE_REQUESTS_CSV = '/admin/service-requests/export';

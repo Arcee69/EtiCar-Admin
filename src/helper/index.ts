@@ -12,3 +12,13 @@ export const formatNaira = (amount: number | string) => {
   const value = typeof amount === 'string' ? Number(amount) : amount
   return `₦${value.toLocaleString('en-NG')}`
 }
+
+export const formatDate = (dateStr: string) => {
+        return new Date(dateStr).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        })
+    }
