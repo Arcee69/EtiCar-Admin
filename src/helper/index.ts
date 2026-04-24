@@ -22,3 +22,11 @@ export const formatDate = (dateStr: string) => {
             minute: '2-digit',
         })
     }
+
+export const formatCurrency = (value: number | string) => {
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    maximumFractionDigits: 0,
+  }).format(typeof value === 'string' ? parseFloat(value) : value)
+}

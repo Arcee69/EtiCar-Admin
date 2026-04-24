@@ -38,3 +38,9 @@ export const EXPORT_PROVIDERS_CSV = '/admin/providers/export';
 //Service Requests
 export const GET_SERVICE_REQUESTS = '/admin/service-requests';
 export const EXPORT_SERVICE_REQUESTS_CSV = '/admin/service-requests/export';
+
+//Inventory
+export const GET_INVENTORY = '/admin/inventory';
+export const EXPORT_INVENTORY_CSV = '/admin/inventory/export';
+export const GET_INVENTORY_STATS = '/admin/inventory/stats';
+export const GET_REFERENCE_DATA = '/admin/inventory/reference-data';

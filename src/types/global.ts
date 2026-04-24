@@ -43,7 +43,7 @@ export interface LoginResponse {
   }
 }
 
-// Inventory and Vendor related types
+// Vendor related types
 export interface VendorOption {
   id: string
   name: string
@@ -66,33 +66,9 @@ export interface Vendor {
   status: 'active' | 'pending' | 'suspended'
 }
 
-export interface InventoryItem {
-  id: string
-  sku: string
-  productName: string
-  category: string
-  vendorId: string
-  vendorName: string
-  unitPrice: number
-  quantity: number
-}
 
-export interface InventoryPayload {
-  sku: string
-  productName: string
-  category: string
-  vendorId: string
-  unitPrice: number
-  quantity: number
 
-}
 
-export interface DeleteInventoryProps {
-  isOpen: boolean
-  item: InventoryItem | null
-  onClose: () => void
-  onDelete: (itemId: string) => void
-}
 
 //Provider related types
 // export interface Provider {
@@ -302,4 +278,99 @@ export interface ServiceRequestData {
   can_assign_provider: boolean
   can_cancel: boolean
   address: string | null
+}
+
+// Inventory related types
+export interface InventoryData {
+  id: string
+  sku: string
+  name: string
+  description: string | null
+  category: {
+    id: string
+    name: string
+  }
+  vendor: {
+    id: string
+    name: string
+    is_deleted: boolean
+  }
+  price: string
+  price_formatted: string
+  stock_quantity: string
+  stock_status: 'healthy' | 'low_stock' | 'out_of_stock'
+  stock_status_label: string
+  stock_status_color: string
+  currency: string
+  is_available: boolean
+  is_deleted: boolean
+  image_url?: string
+  created_at: string
+  created_at_formatted: string
+  updated_at: string
+}
+
+// UI-specific Inventory Item (transformed from InventoryData for table display)
+export interface InventoryItem {
+  id: string
+  sku: string
+  productName: string
+  is_deleted: boolean
+  category: string
+  categoryId: string
+  vendorId: string
+  vendorName: string
+  unitPrice: number
+  quantity: number
+  stockStatus?: 'healthy' | 'low_stock' | 'out_of_stock' | 'medium'
+}
+
+// Inventory Stats
+export interface InventoryStatsData {
+  total_products: number
+  active_products: number
+  total_stock: number
+  inventory_value: number
+  inventory_value_formatted: string
+  stock_breakdown: {
+    healthy: number
+    medium: number
+    low: number
+    out_of_stock: number
+  }
+}
+
+// Reference Data for Inventory
+export interface InventoryReferenceData {
+  vendors: {
+    id: string
+    name: string
+  }[]
+  categories: {
+    id: string
+    name: string
+  }[]
+}
+
+// Inventory Payload for creating/updating inventory items
+export interface InventoryPayload {
+  sku: string
+  name: string
+  category_id: string
+  provider_id: string
+  price: string
+  stock_quantity: string
+  description?: string
+  image_url?: string
+  currency?: string
+  is_available?: boolean
+}
+
+//Delete Inventory Item Payload
+export interface DeleteInventoryProps {
+  isOpen: boolean
+  item: InventoryData | null
+  onClose: () => void
+  onDelete: (itemId: string) => void
+  deleteLoading: boolean
 }
