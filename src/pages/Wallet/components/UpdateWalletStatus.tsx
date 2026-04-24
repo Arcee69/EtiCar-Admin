@@ -10,6 +10,7 @@ interface UpdateWalletStatusProps {
     walletDetails: WalletData | null;
     onUpdate?: () => void; // Callback to refresh wallet list
 }
+
 const UpdateWalletStatus = ({ handleClose, walletDetails, onUpdate }: UpdateWalletStatusProps) => {
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState('');
