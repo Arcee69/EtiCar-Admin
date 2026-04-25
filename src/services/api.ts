@@ -44,3 +44,6 @@ export const GET_INVENTORY = '/admin/inventory';
 export const EXPORT_INVENTORY_CSV = '/admin/inventory/export';
 export const GET_INVENTORY_STATS = '/admin/inventory/stats';
 export const GET_REFERENCE_DATA = '/admin/inventory/reference-data';
+
+//Analytics
+export const GET_ANALYTICS = '/admin/analytics';

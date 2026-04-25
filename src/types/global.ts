@@ -374,3 +374,57 @@ export interface DeleteInventoryProps {
   onDelete: (itemId: string) => void
   deleteLoading: boolean
 }
+
+// Analytics related types
+export interface AnalyticsData {
+  summary: {
+    commission: {
+      value: number
+      formatted: string
+      trend_percent: number
+      trend_direction: 'up' | 'down' | 'stable'
+    }
+    service_revenue: {
+      value: number
+      formatted: string
+      trend_percent: number
+      trend_direction: 'up' | 'down' | 'stable' | null
+    }
+    parts_revenue: {
+      value: number
+      formatted: string
+      trend_percent: number
+      trend_direction: 'up' | 'down' | 'stable' | null
+    }
+    total_revenue: {
+      value: number
+      formatted: string
+    }
+  }
+  monthly_breakdown: {
+    labels: string[]
+    datasets: {
+      label: string
+      data: number[]
+      color: string
+    }[]
+  }
+  revenue_by_city: {
+    labels: string[]
+    data: number[]
+    colors: string[]
+  }
+  top_products: {
+    name: string
+    sku: string
+    quantity_sold: number
+    revenue: number
+    revenue_formatted: string
+  }[]
+  top_services: {
+    name: string
+    completed_count: number
+    revenue: number
+    revenue_formatted: string
+  }[]
+}
