@@ -44,6 +44,12 @@ export const serviceRequestsApi = {
     return response.data.data
   },
 
+  //Unassign provider from service request
+  unassignProvider: async (id: string): Promise<ServiceRequestData> => {
+    const response = await apiInstance.put(`${GET_SERVICE_REQUESTS}/${id}/unassign-provider`)
+    return response.data.data
+  },
+
   //Cancel service request
   cancelServiceRequest: async (id: string, reason: string): Promise<ServiceRequestData> => {
     const response = await apiInstance.post(`${GET_SERVICE_REQUESTS}/${id}/cancel`, { reason })

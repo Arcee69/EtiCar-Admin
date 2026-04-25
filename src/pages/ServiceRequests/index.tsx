@@ -8,6 +8,7 @@ import CancelServiceRequestProvider from './components/CancelServiceRequestProvi
 import AssignServiceRequestProvider from './components/AssignServiceRequestProvider'
 import { serviceRequestsApi, type ServiceRequestsFilters } from '../../services/serviceRequests'
 import type { ServiceRequestData } from '../../types/global'
+import UnAssignServiceRequestProvider from './components/UnAssignServiceRequestProvider'
 
 type ServiceStatus = 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted'
 type StatusFilter = 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted' | ''
@@ -29,6 +30,7 @@ const ServiceRequests = () => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [openCancelModal, setOpenCancelModal] = useState(false)
   const [openAssignModal, setOpenAssignModal] = useState(false)
+  const [openUnassignModal, setOpenUnassignModal] = useState(false)
   const [openDetailsModal, setOpenDetailsModal] = useState(false)
   const [selectedServiceRequest, setSelectedServiceRequest] = useState<ServiceRequestData | null>(null)
 
@@ -213,26 +215,44 @@ const ServiceRequests = () => {
                   >
                     View Details
                   </button>
-                  <button
-                    className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => {
-                      setSelectedServiceRequest(item)
-                      setOpenAssignModal(true)
-                      setOpenMenuId(null)
-                    }}
-                  >
-                    Assign Provider
-                  </button>
-                  <button
-                    className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
-                    onClick={() => {
-                      setSelectedServiceRequest(item)
-                      setOpenCancelModal(true)
-                      setOpenMenuId(null)
-                    }}
-                  >
-                    Cancel Request
-                  </button>
+                  {
+                    item.status === 'completed' || item.status === 'cancelled' ? null :  
+                    item.status ==='accepted' ? (
+                       <button
+                        className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
+                        onClick={() => {
+                          setSelectedServiceRequest(item)
+                          setOpenUnassignModal(true)
+                          setOpenMenuId(null)
+                        }}
+                      >
+                        UnAssign Provider
+                      </button> ) : (
+                      <button
+                        className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
+                        onClick={() => {
+                          setSelectedServiceRequest(item)
+                          setOpenAssignModal(true)
+                          setOpenMenuId(null)
+                        }}
+                      >
+                        Assign Provider
+                      </button>
+                    )
+                  }
+                  {
+                    item.status === 'completed' || item.status === 'cancelled' ? null :
+                    <button
+                      className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
+                      onClick={() => {
+                        setSelectedServiceRequest(item)
+                        setOpenCancelModal(true)
+                        setOpenMenuId(null)
+                      }}
+                    >
+                      Cancel Request
+                    </button>
+                  }
                 </div>
               )}
             </div>
@@ -268,6 +288,13 @@ const ServiceRequests = () => {
       <ModalPop isOpen={openAssignModal}>
         <AssignServiceRequestProvider
           handleClose={() => setOpenAssignModal(false)}
+          serviceRequestDetails={selectedServiceRequest}
+          onUpdate={fetchServiceRequests}
+        />
+      </ModalPop>
+      <ModalPop isOpen={openUnassignModal}>
+        <UnAssignServiceRequestProvider
+          handleClose={() => setOpenUnassignModal(false)}
           serviceRequestDetails={selectedServiceRequest}
           onUpdate={fetchServiceRequests}
         />
