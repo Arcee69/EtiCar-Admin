@@ -9,7 +9,7 @@ import Analytics from "../pages/Analytics";
 import Inventory from "../pages/Inventory";
 import Notifications from "../pages/Notifications";
 import Orders from "../pages/Orders";
-import Overview from "../pages/Overview";
+import Dashboard from "../pages/Dashboard";
 import Providers from "../pages/Providers";
 import Roles from "../pages/Roles";
 import ServiceRequests from "../pages/ServiceRequests";
@@ -33,7 +33,7 @@ const Routers = () => {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/orders" element={<Orders />} />
-            <Route path="/dashboard" element={<Overview />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/providers" element={<Providers />} />
             <Route path="/roles" element={<Roles />} />
             <Route path="/service-requests" element={<ServiceRequests />} />

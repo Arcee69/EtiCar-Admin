@@ -428,3 +428,70 @@ export interface AnalyticsData {
     revenue_formatted: string
   }[]
 }
+
+// Dashboard related types
+export interface DashboardData {
+  stats: {
+    total_users: number
+    total_users_trend: number
+    total_users_trend_direction: 'up' | 'down' | 'stable'
+    vehicles: number
+    vehicles_trend: number
+    vehicles_trend_direction: 'up' | 'down' | 'stable'
+    active_requests: number
+    active_requests_trend: number
+    active_requests_trend_direction: 'up' | 'down' | 'stable'
+    revenue_mtd: number
+    revenue_mtd_formatted: string
+    revenue_mtd_trend: number
+    revenue_mtd_trend_direction: 'up' | 'down' | 'stable'
+    service_providers: number
+    vendors: number
+    pending_orders: number
+    wallet_volume: number
+    wallet_volume_formatted: string
+  }
+  revenue_chart: {
+    labels: string[]
+    datasets: {
+      label: string
+      data: number[]
+      color: string
+      formatted_data: string[]
+    }[]
+  }
+   alerts: {
+     id: string
+     type: 'info' | 'warning' | 'critical'
+     message: string
+     created_at: string
+     created_at_human: string
+   }[]
+   active_requests: {
+     data: {
+       id: string
+       driver: string
+       service: string
+       provider: string
+       status: 'pending' | 'accepted' | 'in_progress' | 'completed' | 'cancelled'
+       status_label: string
+       status_color: string
+       time: string
+       time_human: string
+     }[]
+     meta: {
+       total: number
+       per_page: number
+       current_page: number
+       last_page: number
+     }
+   }
+   meta: {
+     generated_at: string
+     cache_info: {
+       stats_ttl_minutes: number
+       chart_ttl_minutes: number
+       alerts_ttl_minutes: number
+     }
+   }
+ }
