@@ -66,32 +66,6 @@ export interface Vendor {
   status: 'active' | 'pending' | 'suspended'
 }
 
-
-
-
-
-//Provider related types
-// export interface Provider {
-//   id: string
-//   name: string
-//   phone: string
-//   services: string[]
-//   city: string
-//   activeJobs: number
-//   completed: number
-//   wallet: string
-//   email: string
-//   registrationDate: string
-//   businessType: string
-//   status: 'Pending' | 'Verified' | 'Declined'
-//   documents: {
-//     idCard: string
-//     businessRegistration: string
-//     addressProof: string
-//   }
-// }
-
-
 // Transaction related types
 export interface Transaction {
   id: string
@@ -495,3 +469,32 @@ export interface DashboardData {
      }
    }
  }
+
+ // Notifications related types
+export interface NotificationData {
+  id: string
+  type: string
+  type_label: string
+  severity: 'low' | 'medium' | 'high'
+  severity_color: string
+  icon: string
+  title: string
+  message: string
+  reference: string | null
+  metadata: any | null
+  is_read: boolean
+  read_at: string | null
+  created_at: string
+  created_at_human: string
+}
+
+// Notification Stats
+export interface NotificationStats {
+  total: number
+  unread: number
+  critical: number
+  high_priority: number
+  by_type: {
+    [key: string]: number
+  }
+}

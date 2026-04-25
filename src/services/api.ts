@@ -47,3 +47,7 @@ export const GET_REFERENCE_DATA = '/admin/inventory/reference-data';
 
 //Analytics
 export const GET_ANALYTICS = '/admin/analytics';
+
+//Notifications
+export const GET_NOTIFICATIONS = '/admin/notifications';
+export const GET_NOTIFICATIONS_STATS = '/admin/notifications/stats';
