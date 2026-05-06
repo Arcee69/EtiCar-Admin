@@ -75,7 +75,7 @@ const Users = () => {
     {
       key: 'name',
       header: 'Name',
-      render: (item) => <span className="text-NEUTRAL-100 capitalize">{item.name}</span>,
+      render: (item) => <span className="text-NEUTRAL-100 capitalize">{item.name || "Unknown User"}</span>,
     },
     {
       key: 'phone',
@@ -85,7 +85,7 @@ const Users = () => {
     {
       key: 'email',
       header: 'Email',
-      render: (item) => <span className="text-NEUTRAL-100">{item.email}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.email || 'Unknown Email'}</span>,
     },
     {
       key: 'status',
@@ -184,7 +184,7 @@ const Users = () => {
                   >
                     View Details
                   </button>
-                  <button
+                  {/* <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
                     onClick={() => {
                       setSelectedUser(item);
@@ -193,7 +193,7 @@ const Users = () => {
                     }}
                   >
                     Edit User
-                  </button>
+                  </button> */}
                   {
                     item.status === 'active' && (
                     <button
