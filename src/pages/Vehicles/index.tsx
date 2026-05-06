@@ -327,7 +327,7 @@ const Vehicles = () => {
                     Edit Vehicle
                   </button>
                   {
-                    // item.status === "suspended" &&
+                    item.status === "suspended" &&
                     <button
                       className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
                       onClick={() => {
