@@ -1,56 +1,193 @@
-import { useState } from 'react'
-import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlineEllipsisVertical } from 'react-icons/hi2'
+import { useEffect, useState, useCallback, useMemo } from 'react'
+import { HiOutlineMagnifyingGlass, HiOutlineArrowDownTray, HiOutlineEllipsisVertical, HiOutlineTruck, HiOutlineCheckCircle, HiOutlineClock, HiOutlineExclamationCircle, HiOutlinePlus } from 'react-icons/hi2'
 import Table, { type Column } from '../../components/Table'
 import Pagination from '../../components/Pagination'
+import { vehiclesApi } from '../../services/vehicles'
+import type { VehiclesData, VehiclesStatsData, VehiclesReferenceData } from '../../types/global'
+import { ModalPop } from '../../components'
+import CreateVehicle from './components/CreateVehicle'
+import EditVehicle from './components/EditVehicle'
+import DeleteVehicle from './components/DeleteVehicle'
+import RestoreVehicle from './components/RestoreVehicle'
+import ViewVehiclesDetails from './components/ViewVehiclesDetails'
 
-interface Vehicle {
-  id: string
-  plateNumber: string
-  make: string
-  model: string
-  year: number
-  color: string
-  owner: string
-  ownerPhone: string
+
+type StatVariant = 'navy' | 'teal' | 'orange' | 'white'
+
+interface StatCardProps {
+  label: string
+  value: string
+  subtext?: string
+  variant?: StatVariant
+  icon: React.ReactNode
 }
 
-const mockVehicles: Vehicle[] = [
-  { id: 'V001', plateNumber: 'LAG-234-AB', make: 'Toyota', model: 'Camry', year: 2020, color: 'Silver', owner: 'Chukwuemeka Obi', ownerPhone: '+234 801 234 5678' },
-  { id: 'V002', plateNumber: 'ABJ-567-CD', make: 'Honda', model: 'Accord', year: 2019, color: 'Black', owner: 'Aisha Mohammed', ownerPhone: '+234 802 345 6789' },
-  { id: 'V003', plateNumber: 'LAG-890-EF', make: 'Mercedes', model: 'C300', year: 2021, color: 'White', owner: 'Oluwaseun Adeyemi', ownerPhone: '+234 803 456 7890' },
-  { id: 'V004', plateNumber: 'KAN-123-GH', make: 'Toyota', model: 'Hilux', year: 2022, color: 'Red', owner: 'Fatima Bello', ownerPhone: '+234 804 567 8901' },
-  { id: 'V005', plateNumber: 'LAG-456-IJ', make: 'Hyundai', model: 'Tucson', year: 2020, color: 'Blue', owner: 'Damilola Ogundimu', ownerPhone: '+234 805 678 9012' },
-  { id: 'V006', plateNumber: 'ABJ-789-KL', make: 'Ford', model: 'Explorer', year: 2018, color: 'Black', owner: 'Ibrahim Yusuf', ownerPhone: '+234 806 789 0123' },
-  { id: 'V007', plateNumber: 'LAG-012-MN', make: 'Lexus', model: 'RX350', year: 2021, color: 'Pearl', owner: 'Ngozi Eze', ownerPhone: '+234 807 890 1234' },
-  { id: 'V008', plateNumber: 'OYO-345-OP', make: 'Kia', model: 'Sportage', year: 2019, color: 'Grey', owner: 'Tunde Bakare', ownerPhone: '+234 808 901 2345' },
-  { id: 'V009', plateNumber: 'LAG-678-QR', make: 'BMW', model: '3 Series', year: 2022, color: 'White', owner: 'Amaka Okafor', ownerPhone: '+234 809 012 3456' },
-  { id: 'V010', plateNumber: 'ABJ-901-ST', make: 'Nissan', model: 'Pathfinder', year: 2020, color: 'Silver', owner: 'Emeka Nwosu', ownerPhone: '+234 810 123 4567' },
-  { id: 'V011', plateNumber: 'LAG-234-UV', make: 'Toyota', model: 'Corolla', year: 2017, color: 'Blue', owner: 'Chioma Obi', ownerPhone: '+234 811 234 5678' },
-  { id: 'V012', plateNumber: 'KAN-567-WX', make: 'Honda', model: 'CR-V', year: 2021, color: 'Red', owner: 'Musa Aliyu', ownerPhone: '+234 812 345 6789' },
+const StatCard = ({ label, value, subtext, variant = 'white', icon }: StatCardProps) => {
+  const styles: Record<StatVariant, { card: string; iconBg: string; text: string; sub: string }> = {
+    navy:   { card: 'bg-NEUTRAL-300 border-NEUTRAL-200', iconBg: 'bg-white/10', text: 'text-white',       sub: 'text-white/70' },
+    teal:   { card: 'bg-TEAL-100 border-TEAL-200',       iconBg: 'bg-white/15', text: 'text-white',       sub: 'text-white/70' },
+    orange: { card: 'bg-ORANGE-100 border-ORANGE-200',   iconBg: 'bg-white/20', text: 'text-white',       sub: 'text-white/80' },
+    white:  { card: 'bg-white border-GREY-100',          iconBg: 'bg-GREY-300', text: 'text-NEUTRAL-100', sub: 'text-GREY-200'  },
+  }
+  const s = styles[variant]
+
+  return (
+    <div className={`rounded-xl p-5 border ${s.card}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1">
+          <p className={`text-sm mb-2 ${s.sub}`}>{label}</p>
+          <p className={`text-3xl font-bold ${s.text}`}>{value}</p>
+          {subtext && (
+            <p className={`text-xs mt-2 flex items-center gap-1 ${s.sub}`}>
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+              {subtext}
+            </p>
+          )}
+        </div>
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${s.iconBg}`}>
+          <span className={s.text}>{icon}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const SkeletonStatCard = () => (
+  <div className="flex-1 min-w-50 rounded-xl p-5 border border-GREY-100 bg-NEUTRAL-300/30">
+    <div className="flex items-start justify-between gap-3">
+      <div className="flex-1 space-y-3">
+        <div className="h-3 w-24 bg-NEUTRAL-200/50 rounded animate-pulse" />
+        <div className="h-8 w-32 bg-NEUTRAL-200/50 rounded animate-pulse" />
+        <div className="h-3 w-28 bg-NEUTRAL-200/50 rounded animate-pulse" />
+      </div>
+      <div className="w-10 h-10 rounded-lg bg-NEUTRAL-200/50 animate-pulse shrink-0" />
+    </div>
+  </div>
+)
+
+const transformVehiclesStatsForCards = (stats: VehiclesStatsData) => [
+  {
+    label: 'Total Vehicles',
+    value: stats.total.toString(),
+    variant: 'navy' as const,
+    icon: <HiOutlineTruck className="w-5 h-5" />,
+  },
+  {
+    label: 'Available',
+    value: stats.available.toString(),
+    variant: 'teal' as const,
+    icon: <HiOutlineCheckCircle className="w-5 h-5" />,
+  },
+  {
+    label: 'Under Review',
+    value: stats.under_review.toString(),
+    variant: 'orange' as const,
+    icon: <HiOutlineClock className="w-5 h-5" />,
+  },
+  {
+    label: 'Suspended',
+    value: stats.suspended.toString(),
+    variant: 'white' as const,
+    icon: <HiOutlineExclamationCircle className="w-5 h-5 text-GREY-200" />,
+  },
 ]
 
+
 const Vehicles = () => {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [vehicles, setVehicles] = useState<VehiclesData[]>([])
+  const [stats, setStats] = useState<VehiclesStatsData | null>(null)
   const [search, setSearch] = useState('')
+  const [totalItems, setTotalItems] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [selectedVehicle, setSelectedVehicle] = useState<VehiclesData | null>(null)
+  const [isAddOpen, setIsAddOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isViewOpen, setIsViewOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isRestoreOpen, setIsRestoreOpen] = useState(false)
+  const [usersList, setUsersList] = useState<VehiclesReferenceData['users']>([])
 
-  const filtered = mockVehicles.filter(
-    (v) =>
-      v.plateNumber.toLowerCase().includes(search.toLowerCase()) ||
-      v.make.toLowerCase().includes(search.toLowerCase()) ||
-      v.model.toLowerCase().includes(search.toLowerCase()) ||
-      v.owner.toLowerCase().includes(search.toLowerCase())
-  )
+  const fetchVehicles = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await vehiclesApi.getVehicles({ search: search || undefined, per_page: 10 })
+      setVehicles(response.data)     
+      setTotalItems(response.total)
+    } catch (err: unknown) {
+      console.error('Failed to fetch vehicles:', err)
+      setError(err instanceof Error ? err.message : 'Failed to fetch vehicles')
+      setVehicles([])
+    } finally {
+      setLoading(false)
+    }
+  }, [search])
 
-  const totalItems = filtered.length
-  const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const fetchVehiclesStats = useCallback(async () => {
+    try {
+      const response = await vehiclesApi.getVehiclesStats()
+      setStats(response)
+    } catch (err) {
+      console.error('Failed to fetch vehicles stats:', err)
+      setStats(null)
+    }
+  }, [])
 
-  const columns: Column<Vehicle>[] = [
+  const fetchReferenceData = useCallback(async () => {
+    try {
+      const refData = await vehiclesApi.getReferenceData()
+      setUsersList(refData.users)
+    } catch (err) {
+      console.error('Failed to fetch reference data:', err)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchVehicles()
+  }, [fetchVehicles])
+
+  useEffect(() => {
+    fetchVehiclesStats()
+  }, [fetchVehiclesStats])
+
+  useEffect(() => {
+    fetchReferenceData()
+  }, [fetchReferenceData])
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+  const filtered = useMemo(() => {
+    const query = search.toLowerCase().trim()
+    if (!query) return vehicles
+    return vehicles.filter(
+      (v) =>
+        v.plate_number.toLowerCase().includes(query) ||
+        v.make.toLowerCase().includes(query) ||
+        v.model.toLowerCase().includes(query) ||
+        v.owner_name.toLowerCase().includes(query)
+    )
+  }, [vehicles, search])
+
+   useEffect(() => {
+    setCurrentPage(1)
+  }, [search])
+
+  const statCards = useMemo(() => stats ? transformVehiclesStatsForCards(stats) : [], [stats])
+
+  const columns: Column<VehiclesData>[] = [
     {
       key: 'plateNumber',
       header: 'Plate Number',
-      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.plateNumber}</span>,
+      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.plate_number}</span>,
     },
     {
       key: 'make',
@@ -75,18 +212,18 @@ const Vehicles = () => {
     {
       key: 'owner',
       header: 'Owner',
-      render: (item) => <span className="text-NEUTRAL-100">{item.owner}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.owner_name}</span>,
     },
     {
       key: 'ownerPhone',
       header: 'Owner Phone',
-      render: (item) => <span className="text-NEUTRAL-100">{item.ownerPhone}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.owner_phone}</span>,
     },
   ]
 
   const handleExportCSV = () => {
     const headers = ['Plate Number', 'Make', 'Model', 'Year', 'Color', 'Owner', 'Owner Phone']
-    const rows = filtered.map((v) => [v.plateNumber, v.make, v.model, v.year, v.color, v.owner, v.ownerPhone])
+    const rows = filtered.map((v) => [v.plate_number, v.make, v.model, v.year, v.color, v.owner_name, v.owner.phone])
     const csv = [headers, ...rows].map((r) => r.join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -99,6 +236,16 @@ const Vehicles = () => {
 
   return (
     <div className="font-sans">
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {loading
+          ? Array(4).fill(0).map((_, i) => <SkeletonStatCard key={i} />)
+          : statCards.map((stat, i) => (
+              <StatCard key={i} {...stat} />
+            ))
+        }
+      </div>
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
@@ -115,21 +262,33 @@ const Vehicles = () => {
         </div>
 
         {/* Export CSV */}
-        <button
-          onClick={handleExportCSV}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 border border-GREY-100 rounded-lg text-sm font-medium text-NEUTRAL-100 bg-white hover:bg-GREY-300 transition-colors sm:shrink-0"
-        >
-          <HiOutlineArrowDownTray className="w-4 h-4" />
-          Export CSV
-        </button>
+        <div className='flex items-center gap-5'>
+          <button
+            type="button"
+            onClick={() => setIsAddOpen(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-BLUE-100 px-4 py-2.5 text-sm font-medium text-white hover:bg-BLUE-300"
+          >
+            <HiOutlinePlus className="h-4 w-4" />
+            Add Vehicle
+          </button>
+
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-GREY-100 rounded-lg text-sm font-medium text-NEUTRAL-100 bg-white hover:bg-GREY-300 transition-colors sm:shrink-0"
+          >
+            <HiOutlineArrowDownTray className="w-4 h-4" />
+            Export CSV
+          </button>
+
+        </div>
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-GREY-100 overflow-hidden">
         <Table
           columns={columns}
-          data={paginated}
-          emptyMessage="No vehicles found"
+          data={vehicles}
+          emptyMessage={loading ? "Loading vehicles..." : error ? "Error loading vehicles" : "No vehicles found"} 
           renderActions={(item) => (
             <div className="relative">
               <button
@@ -149,21 +308,46 @@ const Vehicles = () => {
                 >
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={() => { 
+                      setOpenMenuId(null)
+                      setIsViewOpen(true)
+                      setSelectedVehicle(item)
+                    }}
                   >
                     View Details
                   </button>
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={() => {
+                      setOpenMenuId(null)
+                      setIsEditOpen(true)
+                      setSelectedVehicle(item)
+                    }}
                   >
                     Edit Vehicle
                   </button>
+                  {
+                    // item.status === "suspended" &&
+                    <button
+                      className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
+                      onClick={() => {
+                        setOpenMenuId(null)
+                        setIsRestoreOpen(true)
+                        setSelectedVehicle(item)
+                      }}
+                    >
+                      Restore Vehicle
+                    </button>
+                  }
                   <button
                     className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
-                    onClick={() => setOpenMenuId(null)}
+                    onClick={() => {
+                      setOpenMenuId(null)
+                      setIsDeleteOpen(true)
+                      setSelectedVehicle(item)
+                    }}
                   >
-                    Remove
+                    Delete Vehicle
                   </button>
                 </div>
               )}
@@ -190,6 +374,47 @@ const Vehicles = () => {
           onClick={() => setOpenMenuId(null)}
         />
       )}
+
+      <ModalPop isOpen={isViewOpen}>
+        <ViewVehiclesDetails 
+          handleClose={() => setIsViewOpen(false)}
+          vehicleDetails={selectedVehicle}
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={isAddOpen}>
+        <CreateVehicle 
+          handleClose={() => setIsAddOpen(false)}
+          onUpdate={fetchVehicles}
+          usersList={usersList}
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={isEditOpen}>
+        <EditVehicle
+          handleClose={() => setIsEditOpen(false)}
+          vehicleDetails={selectedVehicle}
+          onUpdate={fetchVehicles}
+          usersList={usersList}
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={isRestoreOpen}>
+        <RestoreVehicle
+          handleClose={() => setIsRestoreOpen(false)}
+          vehicleDetails={selectedVehicle}
+          onUpdate={fetchVehicles}
+        />
+      </ModalPop>
+
+      <ModalPop isOpen={isDeleteOpen}>
+        <DeleteVehicle 
+          handleClose={() => setIsDeleteOpen(false)}
+          vehicleDetails={selectedVehicle}
+          onUpdate={fetchVehicles}
+        />
+      </ModalPop>
+
     </div>
   )
 }

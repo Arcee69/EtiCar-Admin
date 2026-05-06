@@ -498,3 +498,160 @@ export interface NotificationStats {
     [key: string]: number
   }
 }
+
+// Admin Roles and Permissions related types
+
+// Roles Data
+export interface RolesData {
+  id: string
+  name: string
+  display_name: string
+  description: string
+  badge_color: string
+  user_count: number
+  permissions: string[]
+  permissions_categories: string[]
+  is_system_role: boolean
+}
+
+//Create/Update Role Payload
+export interface RolePayload {
+  name?: string
+  description: string
+  badge_color: string
+  permissions: string[]
+}
+
+// Permissions Data
+export interface PermissionData {
+  All: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Users: {
+    id: number
+    name: string
+    display_name: string
+  }
+  Providers: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Vendors: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  "Service Requests": {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Orders: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Inventory: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Wallets: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Transactions: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Analytics: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Notifications: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Roles: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+  Other: {
+    id: number
+    name: string
+    display_name: string
+  }[]
+}
+
+//Vehicles
+export interface VehiclesPayload {
+  make: string
+  model: string
+  year: number
+  plate_number: string
+  color: string
+  vin: string
+  owner_id: string
+}
+export interface VehiclesData {
+  id: string
+  plate_number: string
+  make: string
+  model: string
+  year: string | number
+  color: string
+  vin: string
+  vehicle_type: string
+  status: string
+  status_label: string
+  status_color: string
+  owner: {
+    id: number
+    name: string
+    phone: string
+    email: string | null
+  }
+  owner_name: string
+  owner_phone: string
+  seat_capacity: string | number | null
+  is_ac: boolean
+  primary_image_url: string | null
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+  is_deleted: boolean
+}
+
+export interface VehiclesReferenceData {
+  makes: string[]
+  years: string[]
+  statuses: string[]
+  vehicle_types: string[]
+  users: {
+    id: number
+    name: string | null
+    phone: string
+    email: string | null
+  }[]
+}
+
+export interface VehiclesStatsData {
+  total: number
+  available: number
+  on_trip: number
+  under_review: number
+  suspended: number
+  deleted: number
+  by_make: {
+    make: string
+    count: string
+  }[]
+}

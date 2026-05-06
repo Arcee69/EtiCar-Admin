@@ -51,3 +51,13 @@ export const GET_ANALYTICS = '/admin/analytics';
 //Notifications
 export const GET_NOTIFICATIONS = '/admin/notifications';
 export const GET_NOTIFICATIONS_STATS = '/admin/notifications/stats';
+
+//Roles and Permissions
+export const GET_ROLES = '/admin/roles';
+export const GET_PERMISSIONS = '/admin/roles/permissions';
+
+//Vehicles
+export const GET_VEHICLES = '/admin/vehicles';
+export const GET_VEHICLES_STATS = '/admin/vehicles/stats';
+export const EXPORT_VEHICLES_CSV = '/admin/vehicles/export';
+export const GET_VEHICLES_REFERENCE_DATA = '/admin/vehicles/reference-data';
