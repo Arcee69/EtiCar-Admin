@@ -11,6 +11,16 @@ import DeleteVehicle from './components/DeleteVehicle'
 import RestoreVehicle from './components/RestoreVehicle'
 import ViewVehiclesDetails from './components/ViewVehiclesDetails'
 
+type VehicleStatus = 'available' | 'on_trip' | 'under_review' | 'suspended'
+
+// Using User type from global types
+
+const statusStyles: Record<VehicleStatus, string> = {
+  available: 'bg-green-100 text-green-700',
+  on_trip: 'bg-blue-100 text-blue-400',
+  under_review: 'bg-orange-100 text-orange-400',
+  suspended: 'bg-red-100 text-red-400',
+}
 
 type StatVariant = 'navy' | 'teal' | 'orange' | 'white'
 
@@ -218,6 +228,18 @@ const Vehicles = () => {
       key: 'ownerPhone',
       header: 'Owner Phone',
       render: (item) => <span className="text-NEUTRAL-100">{item.owner_phone}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (item) => {
+        const status = item.status as VehicleStatus
+        return (
+          <span className={`inline-flex items-center px-2.5 py-1 capitalize rounded-full text-xs font-medium ${statusStyles[status]}`}>
+            {item.status}
+          </span>
+        )
+      },
     },
   ]
 
