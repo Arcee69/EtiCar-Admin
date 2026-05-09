@@ -1,16 +1,15 @@
 import { useMemo, useState } from 'react'
 import { HiOutlineXMark } from 'react-icons/hi2'
 import { ModalPop, PasswordField } from '../../../components'
-import { roleColorOptions, type Permission, type RolePayload } from '../types'
+import { roleColorOptions, type RolePayload } from '../types'
 
 interface AddRolesProps {
   isOpen: boolean
   onClose: () => void
   onSave: (payload: RolePayload) => void
-  permissionOptions: Permission[]
 }
 
-const AddRoles = ({ isOpen, onClose, onSave, permissionOptions }: AddRolesProps) => {
+const AddRoles = ({ isOpen, onClose, onSave }: AddRolesProps) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [iconBgClass, setIconBgClass] = useState(roleColorOptions[0].value)
@@ -39,11 +38,11 @@ const AddRoles = ({ isOpen, onClose, onSave, permissionOptions }: AddRolesProps)
     setPermissions([])
   }
 
-  const togglePermission = (permissionName: string) => {
-    setPermissions((prev) =>
-      prev.includes(permissionName) ? prev.filter((item) => item !== permissionName) : [...prev, permissionName]
-    )
-  }
+  // const togglePermission = (permissionName: string) => {
+  //   setPermissions((prev) =>
+  //     prev.includes(permissionName) ? prev.filter((item) => item !== permissionName) : [...prev, permissionName]
+  //   )
+  // }
 
   const handleClose = () => {
     resetForm()

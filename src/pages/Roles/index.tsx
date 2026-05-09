@@ -250,7 +250,7 @@ const Roles = () => {
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onSave={handleAddRole}
-        permissionOptions={permissionsList}
+        // permissionOptions={permissionsList}
       />
       <EditRoles
         isOpen={isEditOpen}
