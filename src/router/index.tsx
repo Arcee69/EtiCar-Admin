@@ -20,6 +20,7 @@ import Wallet from "../pages/Wallet";
 import Transactions from "../pages/Transactions";
 import AuthLayout from "../layouts/AuthLayout";
 import ChangePassword from "../pages/Auth/ChangePassword";
+import ViewAdmins from "../pages/Roles/components/ViewAdmins";
 
 const Routers = () => {
   return (
@@ -36,6 +37,7 @@ const Routers = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/providers" element={<Providers />} />
             <Route path="/roles" element={<Roles />} />
+            <Route path="/admin/roles/:roleName" element={<ViewAdmins />} />
             <Route path="/service-requests" element={<ServiceRequests />} />
             <Route path="/users" element={<Users />} />
             <Route path="/vehicles" element={<Vehicles />} />

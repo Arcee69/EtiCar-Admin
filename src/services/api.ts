@@ -7,7 +7,8 @@ export const CHANGE_PASSWORD = '/admin/auth/change-password';
 export const GET_DASHBOARD = '/admin/dashboard';
 
 // Admins
-export const CREATE_ADMINS = '/admin/users';
+export const GET_ADMINS = '/admin/roles';
+export const SUSPEND_ADMINS = '/admin/admins';
 
 //Vendors
 export const LIST_VENDORS = '/admin/vendors';
@@ -52,9 +53,6 @@ export const GET_ANALYTICS = '/admin/analytics';
 export const GET_NOTIFICATIONS = '/admin/notifications';
 export const GET_NOTIFICATIONS_STATS = '/admin/notifications/stats';
 
-//Roles and Permissions
-export const GET_ROLES = '/admin/roles';
-export const GET_PERMISSIONS = '/admin/roles/permissions';
 
 //Vehicles
 export const GET_VEHICLES = '/admin/vehicles';

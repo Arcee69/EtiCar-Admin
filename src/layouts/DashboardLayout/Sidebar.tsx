@@ -25,34 +25,45 @@ import Logout from '../../components/Logout'
 import { useSelector } from 'react-redux'
 import type { RootState } from '../../store'
 
+interface SidebarItem {
+  path: string
+  label: string
+  icon: React.ElementType
+  hiddenForRoles?: string[]
+}
 
-const sections = [
+interface SidebarSection {
+  label: string
+  items: SidebarItem[]
+}
+
+const sections: SidebarSection[] = [
   {
     label: 'MAIN',
     items: [
-      { path: '/dashboard', label: 'Dashboard', icon: HiOutlineSquares2X2 },
-      { path: '/users', label: 'Users', icon: HiOutlineUsers },
-      { path: '/vehicles', label: 'Vehicles', icon: HiOutlineTruck },
-      { path: '/providers', label: 'Providers', icon: HiOutlineUserGroup },
-      { path: '/vendors', label: 'Vendors', icon: HiOutlineBuildingStorefront },
+      { path: '/dashboard', label: 'Dashboard', icon: HiOutlineSquares2X2, hiddenForRoles: ['operations_manager', 'vendor_manager', 'finance_manager'] },
+      { path: '/users', label: 'Users', icon: HiOutlineUsers, hiddenForRoles: ['vendor_manager', 'finance_manager'] },
+      { path: '/vehicles', label: 'Vehicles', icon: HiOutlineTruck, hiddenForRoles: ['vendor_manager', 'finance_manager'] },
+      { path: '/providers', label: 'Providers', icon: HiOutlineUserGroup, hiddenForRoles: ['finance_manager'] },
+      { path: '/vendors', label: 'Vendors', icon: HiOutlineBuildingStorefront, hiddenForRoles: ['finance_manager'] },
     ],
   },
   {
     label: 'OPERATIONS',
     items: [
-      { path: '/service-requests', label: 'Service Requests', icon: HiOutlineClipboardDocumentList },
-      { path: '/orders', label: 'Orders', icon: HiOutlineShoppingCart },
-      { path: '/wallet', label: 'Wallets', icon: HiOutlineWallet },
-      { path: '/transactions', label: 'Transactions', icon: HiOutlineBanknotes },
-      { path: '/inventory', label: 'Inventory', icon: HiOutlineCube },
+      { path: '/service-requests', label: 'Service Requests', icon: HiOutlineClipboardDocumentList, hiddenForRoles: ['vendor_manager', 'finance_manager'] },
+      { path: '/orders', label: 'Orders', icon: HiOutlineShoppingCart, hiddenForRoles: ['finance_manager'] },
+      { path: '/wallet', label: 'Wallets', icon: HiOutlineWallet, hiddenForRoles: ['vendor_manager', 'operations_manager'] },
+      { path: '/transactions', label: 'Transactions', icon: HiOutlineBanknotes, hiddenForRoles: ['vendor_manager', 'operations_manager'] },
+      { path: '/inventory', label: 'Inventory', icon: HiOutlineCube, hiddenForRoles: ['finance_manager'] },
     ],
   },
   {
     label: 'INSIGHTS',
     items: [
-      { path: '/analytics', label: 'Analytics', icon: HiOutlineChartBar },
-      { path: '/notifications', label: 'Notifications', icon: HiOutlineBell },
-      { path: '/roles', label: 'Admin Roles', icon: HiOutlineShieldCheck },
+      { path: '/analytics', label: 'Analytics', icon: HiOutlineChartBar, hiddenForRoles: ['vendor_manager'] },
+      { path: '/notifications', label: 'Notifications', icon: HiOutlineBell, hiddenForRoles: [ 'vendor_manager', 'finance_manager'] },
+      { path: '/roles', label: 'Admin Roles', icon: HiOutlineShieldCheck, hiddenForRoles: ['operations_manager', 'vendor_manager', 'finance_manager'] },
     ],
   },
 ]
@@ -66,6 +77,14 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false)
   
   const { user } = useSelector((state: RootState) => state.auth)
+  const role = useSelector((state: RootState) => state.auth.role)
+
+  const visibleSections = sections.map((section) => ({
+    ...section,
+    items: section.items.filter(
+      (item) => !item.hiddenForRoles || !role || !item.hiddenForRoles.includes(role)
+    ),
+  })).filter((section) => section.items.length > 0)
 
 
   return (
@@ -94,7 +113,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4  px-3">
-        {sections.map((section) => (
+        {visibleSections.map((section) => (
           <div key={section.label} className="mb-4">
             <p className="px-3 mb-2 text-xs font-semibold text-GREY-200 tracking-widest uppercase">
               {section.label}

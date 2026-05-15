@@ -1,135 +1,52 @@
 import { useEffect, useState } from 'react'
-import { HiOutlinePlus, HiOutlinePencilSquare, HiOutlineShieldCheck, HiOutlineTrash } from 'react-icons/hi2'
-import AddRoles from './components/AddRoles'
-import DeleteRoles from './components/DeleteRoles'
-import EditRoles from './components/EditRoles'
+import { HiOutlinePlus, HiOutlineShieldCheck } from 'react-icons/hi2'
+import AddAdmin from './components/AddAdmin'
 import { rolesAndPermissionsApi } from '../../services/rolesAndPermissions'
-import type { Role, RoleData, RolePayload, Permission, PermissionData } from './types'
-import { toast } from 'sonner'
+import type { Role, RoleData, } from '../../types/global'
+import { useNavigate } from 'react-router-dom'
+
 
 const mapApiRoleToUiRole = (apiRole: RoleData): Role => ({
   id: apiRole.id,
   name: apiRole.name,
   display_name: apiRole.display_name,
   description: apiRole.description,
-  users: apiRole.users_count,
-  permissions: apiRole.permissions,
-  iconBgClass: apiRole.badge_color,
+  admins_count: apiRole.admins_count,
+  badge_color: apiRole.badge_color,
 })
 
-// Flatten all Permission objects from all categories into a single array
-const flattenPermissions = (permissionsData: PermissionData): Permission[] => {
-  return Object.values(permissionsData).flat()
-}
 
 const Roles = () => {
   const [roles, setRoles] = useState<Role[]>([])
-  const [permissionsList, setPermissionsList] = useState<Permission[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isAddOpen, setIsAddOpen] = useState(false)
-  const [isEditOpen, setIsEditOpen] = useState(false)
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null)
 
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        const data = await rolesAndPermissionsApi.getRoles()
-        const mappedRoles = (data as RoleData[]).map(mapApiRoleToUiRole)
-        setRoles(mappedRoles)
-      } catch (err) {
-        setError('Failed to load roles. Please try again.')
-        console.error('Error fetching roles:', err)
-      } finally {
-        setLoading(false)
-      }
+
+  const navigate = useNavigate()
+
+  const fetchRoles = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const data = await rolesAndPermissionsApi.getAdmins()
+      const mappedRoles = (data as RoleData[]).map(mapApiRoleToUiRole)
+      setRoles(mappedRoles)
+    } catch (err) {
+      setError('Failed to load roles. Please try again.')
+      console.error('Error fetching roles:', err)
+    } finally {
+      setLoading(false)
     }
-
+  }
+  useEffect(() => {
     fetchRoles()
   }, [])
 
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      try {
-        const data = await rolesAndPermissionsApi.getPermissions()
-        const flatPermissions = flattenPermissions(data as PermissionData)
-        setPermissionsList(flatPermissions)
-      } catch (err) {
-        console.error('Error fetching permissions:', err)
-      }
-    }
 
-    fetchPermissions()
-  }, [])
-
-  const handleAddRole = async (payload: RolePayload) => {
-    try {
-      const newRole = await rolesAndPermissionsApi.createRole(payload)
-      const mappedRole = mapApiRoleToUiRole(newRole)
-      toast.success('Role created successfully')
-      setRoles((prev) => [...prev, mappedRole])
-      setIsAddOpen(false)
-    } catch (err) {
-      console.error('Error creating role:', err)
-      setError('Failed to create role. Please try again.')
-      toast.error('Failed to create role. Please try again.')
-    }
-  }
-
-  const handleEditRole = async (roleId: string, payload: RolePayload) => {
-    try {
-      await rolesAndPermissionsApi.updateRoles(roleId, payload)
-      setRoles((prev) =>
-        prev.map((role) =>
-          role.id === roleId
-            ? { ...role, name: payload.name, display_name: payload.name, description: payload.description, iconBgClass: payload.badge_color, permissions: payload.permissions }
-            : role
-        )
-      )
-      toast.success('Role updated successfully')
-      setIsEditOpen(false)
-      setSelectedRole(null)
-    } catch (err) {
-      console.error('Error updating role:', err)
-      setError('Failed to update role. Please try again.')
-    }
-  }
-
-  const handleDeleteRole = async (roleId: string) => {
-    try {
-      await rolesAndPermissionsApi.deleteRole(roleId)
-      setRoles((prev) => prev.filter((role) => role.id !== roleId))
-      toast.success('Role deleted successfully')
-      setIsDeleteOpen(false)
-      setSelectedRole(null)
-    } catch (err) {
-      console.error('Error deleting role:', err)
-      toast.error('Failed to delete role. Please try again.')
-      setError('Failed to delete role. Please try again.')
-    }
-  }
-
-  const openEdit = (role: Role) => {
-    setSelectedRole(role)
-    setIsEditOpen(true)
-  }
-
-  const openDelete = (role: Role) => {
-    setSelectedRole(role)
-    setIsDeleteOpen(true)
-  }
-
-  const closeEdit = () => {
-    setIsEditOpen(false)
-    setSelectedRole(null)
-  }
-
-  const closeDelete = () => {
-    setIsDeleteOpen(false)
-    setSelectedRole(null)
+  const handleAdminAdded = () => {
+    setIsAddOpen(false)
+    fetchRoles()
   }
 
   // ─── Skeleton Loader ─────────────────────────────────────────────────────
@@ -168,7 +85,7 @@ const Roles = () => {
           className="inline-flex items-center gap-2 rounded-lg bg-BLUE-100 px-4 py-2.5 text-sm font-medium text-white hover:bg-BLUE-300"
         >
           <HiOutlinePlus className="h-4 w-4" />
-          Add Role
+          Add Admin
         </button>
       </div>
 
@@ -194,10 +111,11 @@ const Roles = () => {
           roles.map((role) => (
             <div
               key={role.id}
-              className="bg-white border border-GREY-100 rounded-xl p-5 flex items-start justify-between gap-4"
+              className="bg-white border border-GREY-100 rounded-xl p-5 cursor-pointer flex items-start justify-between gap-4"
+              onClick={() => navigate(`/admin/roles/${role.name}`, { state: { role } })}
             >
               <div className="flex items-start gap-4">
-                <div className={`p-2.5 rounded-lg ${role.iconBgClass}`}>
+                <div className={`p-2.5 rounded-lg`}>
                   <HiOutlineShieldCheck className="w-5 h-5" />
                 </div>
 
@@ -205,61 +123,23 @@ const Roles = () => {
                   <h3 className="text-base font-semibold text-NEUTRAL-100">{role.display_name}</h3>
                   <p className="text-sm text-GREY-200 mt-0.5">{role.description}</p>
 
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {role.permissions.map((permission) => (
-                      <span
-                        key={permission}
-                        className="inline-flex items-center px-2 py-0.5 rounded-md bg-GREY-300 text-xs text-NEUTRAL-100 capitalize"
-                      >
-                        {permission}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
 
               <div className="text-right shrink-0">
-                <p className="text-sm font-medium text-NEUTRAL-100">{role.users} users</p>
+                <p className="text-sm font-medium text-NEUTRAL-100">{role.admins_count} users</p>
 
-                <div className="flex gap-1 mt-2 justify-end">
-                  <button
-                    type="button"
-                    onClick={() => openEdit(role)}
-                    className="p-1.5 rounded-md hover:bg-GREY-300 transition-colors"
-                    aria-label={`Edit ${role.name}`}
-                  >
-                    <HiOutlinePencilSquare className="w-3.5 h-3.5 text-GREY-200" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => openDelete(role)}
-                    className="p-1.5 rounded-md hover:bg-GREY-300 transition-colors"
-                    aria-label={`Delete ${role.name}`}
-                  >
-                    <HiOutlineTrash className="w-3.5 h-3.5 text-GREY-200" />
-                  </button>
-                </div>
               </div>
             </div>
           ))
         )}
       </div>
 
-      <AddRoles
+      <AddAdmin
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        onSave={handleAddRole}
-        // permissionOptions={permissionsList}
+        onSuccess={handleAdminAdded}
       />
-      <EditRoles
-        isOpen={isEditOpen}
-        role={selectedRole}
-        onClose={closeEdit}
-        onSave={handleEditRole}
-        permissionOptions={permissionsList}
-      />
-      <DeleteRoles isOpen={isDeleteOpen} role={selectedRole} onClose={closeDelete} onDelete={handleDeleteRole} />
     </div>
   )
 }

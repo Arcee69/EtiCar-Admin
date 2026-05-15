@@ -30,3 +30,9 @@ export const formatCurrency = (value: number | string) => {
     maximumFractionDigits: 0,
   }).format(typeof value === 'string' ? parseFloat(value) : value)
 }
+
+ export const roleNames = [
+    {label: 'Finance Manager', value: 'finance_manager'},
+    {label: 'Operations Manager', value: 'operations_manager'},
+    {label: 'Vendor Manager', value: 'vendor_manager'}
+  ]

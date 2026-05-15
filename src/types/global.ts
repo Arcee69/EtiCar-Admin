@@ -499,98 +499,6 @@ export interface NotificationStats {
   }
 }
 
-// Admin Roles and Permissions related types
-
-// Roles Data
-export interface RolesData {
-  id: string
-  name: string
-  display_name: string
-  description: string
-  badge_color: string
-  user_count: number
-  permissions: string[]
-  permissions_categories: string[]
-  is_system_role: boolean
-}
-
-//Create/Update Role Payload
-export interface RolePayload {
-  name?: string
-  description: string
-  badge_color: string
-  permissions: string[]
-}
-
-// Permissions Data
-export interface PermissionData {
-  All: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Users: {
-    id: number
-    name: string
-    display_name: string
-  }
-  Providers: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Vendors: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  "Service Requests": {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Orders: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Inventory: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Wallets: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Transactions: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Analytics: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Notifications: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Roles: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-  Other: {
-    id: number
-    name: string
-    display_name: string
-  }[]
-}
-
 //Vehicles
 export interface VehiclesPayload {
   make: string
@@ -654,4 +562,50 @@ export interface VehiclesStatsData {
     make: string
     count: string
   }[]
+}
+
+// Roles related types
+export interface Role {
+  id: string
+  name: string
+  display_name: string
+  description: string
+  admins_count: number
+  badge_color?: string
+}
+
+// Admin info within a role detail (matches RoleData.admins)
+export interface AdminInfo {
+  id: string
+  uuid: string
+  full_name: string
+  email: string
+  status: string
+  created_at: string
+}
+
+// API data shape for a role (matches RolesData from global types, subset needed)
+export interface RoleData {
+  id: string
+  name: string
+  description: string
+  badge_color: string
+  display_name: string
+  admins_count: number
+  admins: {
+    id: string
+    full_name: string
+    email: string
+    status: string
+    created_at: string
+  }[]
+  is_system_role?: boolean
+}
+
+export interface AdminPayload {
+  role: string
+  full_name: string
+  email: string
+  password: string
+  description: string
 }
