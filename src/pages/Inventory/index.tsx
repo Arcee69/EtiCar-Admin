@@ -60,7 +60,7 @@ const Inventory = () => {
 
       const response = await inventoryApi.getInventory(filters)
       setInventory(response.data)
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch inventory')
       setInventory([])

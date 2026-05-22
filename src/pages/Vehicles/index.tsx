@@ -129,7 +129,7 @@ const Vehicles = () => {
       setError(null)
       const response = await vehiclesApi.getVehicles({ search: search || undefined, per_page: 10 })
       setVehicles(response.data)     
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err: unknown) {
       console.error('Failed to fetch vehicles:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch vehicles')

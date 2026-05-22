@@ -5,10 +5,12 @@ import apiInstance from "./instance"
 
 export interface WalletResponse {
   data: WalletData[]
-  current_page: number
-  last_page: number
-  per_page: number
-  total: number
+  meta: {
+    current_page: number
+    last_page: number
+    per_page: number
+    total: number
+  }
 }
 
 export interface WalletFilters {

@@ -53,7 +53,7 @@ const Vendors = () => {
 
       const response = await vendorApi.getVendors(filters)
       setVendors(response.data)
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch vendors')
       setVendors([])

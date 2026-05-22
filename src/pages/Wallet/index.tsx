@@ -95,7 +95,7 @@ const Wallet = () => {
   
         const response = await walletApi.getWallets(filters)
         setWallets(response.data)
-        setTotalItems(response.total)
+        setTotalItems(response.meta.total)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch wallets')
         setWallets([])

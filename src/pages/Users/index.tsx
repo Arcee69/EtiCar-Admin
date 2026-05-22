@@ -41,12 +41,13 @@ const Users = () => {
 
       const filters: UsersFilters = {
         search: search || undefined,
+        page: currentPage,
         per_page: itemsPerPage,
       }
 
       const response = await usersApi.getUsers(filters)
       setUsers(response.data)
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users')
       setUsers([])
@@ -54,7 +55,7 @@ const Users = () => {
     } finally {
       setLoading(false)
     }
-  }, [search, itemsPerPage])
+  }, [search, currentPage, itemsPerPage])
 
   useEffect(() => {
     fetchUsers()

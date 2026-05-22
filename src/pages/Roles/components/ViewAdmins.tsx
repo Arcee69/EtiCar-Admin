@@ -35,7 +35,6 @@ const ViewAdmins = () => {
     try {
       setLoading(true)
       const data = await rolesAndPermissionsApi.getRoleDetails(roleName || '')
-      console.log('Fetched role details:', data)
       setAdmins(data.users ?? [])
     } catch (error) {
       const message = (error as any)?.response?.data?.message || 'Failed to load admins. Please try again.'

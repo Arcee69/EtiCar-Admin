@@ -46,7 +46,6 @@ const CreateVehicle = ({ handleClose, onUpdate, usersList }: CreateVehicleProps)
         owner_id: userId,
     }
 
-    console.log("data: ", data)
 
     setSubmitting(true);
     try {

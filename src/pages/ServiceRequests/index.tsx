@@ -55,7 +55,7 @@ const ServiceRequests = () => {
 
       const response = await serviceRequestsApi.getServiceRequests(filters)
       setServiceRequests(response.data)
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch service requests')
       setServiceRequests([])

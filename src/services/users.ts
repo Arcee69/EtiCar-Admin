@@ -7,14 +7,17 @@ export interface UsersFilters {
   search?: string
   status?: 'active' | 'pending' | 'suspended'
   per_page?: number
+  page?: number
 }
 
 export interface UserResponse {
   data: UsersData[]
+  meta: {
   current_page: number
   last_page: number
   per_page: number
   total: number
+  }
 }
 
 // API functions for users
@@ -26,6 +29,7 @@ export const usersApi = {
     if (filters.search) params.append('search', filters.search)
     if (filters.status) params.append('status', filters.status)
     if (filters.per_page) params.append('per_page', filters.per_page?.toString() || '10')
+    if (filters.page) params.append('page', filters.page.toString())
 
     const response = await apiInstance.get(`${GET_USERS}?${params.toString()}`)
     return response.data

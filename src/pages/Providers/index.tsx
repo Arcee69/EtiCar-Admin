@@ -59,7 +59,7 @@ const Providers = () => {
 
       const response = await providersApi.getProviders(filters)
       setProviders(response.data)
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch providers')
       setProviders([])

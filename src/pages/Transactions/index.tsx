@@ -61,7 +61,7 @@ const Transactions = () => {
 
       const response = await transactionsApi.getTransactions(filters)
       setTransactions(response.data)
-      setTotalItems(response.total)
+      setTotalItems(response.meta.total)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch transactions')
       setTransactions([])

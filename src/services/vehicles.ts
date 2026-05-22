@@ -10,10 +10,12 @@ export interface VehiclesFilters {
 
 export interface VehiclesResponse {
   data: VehiclesData[]
-  current_page: number
-  last_page: number
-  per_page: number
-  total: number
+  meta: {
+    current_page: number
+    last_page: number
+    per_page: number
+    total: number
+  }
 }
 
 // API functions for analytics
