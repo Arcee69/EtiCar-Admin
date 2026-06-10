@@ -7,7 +7,7 @@ import type { ProvidersData } from "../../../types/global"
 interface VerifyProviderProps {
   handleClose: () => void
   selectedProvider: ProvidersData | null
-  onConfirm: (status: 'Verified' | 'Declined') => void
+  onConfirm: (status: 'verified' | 'declined') => void
 }
 
 const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProviderProps) => {
@@ -21,7 +21,7 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
   const handleVerify = async () => {
     setLoading(true)
     try {
-      await onConfirm('Verified')
+      await onConfirm('verified')
       toast.success("Provider verified successfully")
     } catch {
       // Error handled by parent
@@ -33,7 +33,7 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
   const handleDecline = async () => {
     setLoading(true)
     try {
-      await onConfirm('Declined')
+      await onConfirm('declined')
       toast.success("Provider declined successfully")
     } catch {
       // Error handled by parent

@@ -157,9 +157,9 @@ const Providers = () => {
     URL.revokeObjectURL(url)
   }
 
-  const handleVerify = async (id: string, status: 'Verified' | 'Declined') => {
+  const handleVerify = async (id: string, status: 'verified' | 'declined') => {
     try {
-      await providersApi.verifyProvider(id, { verification_status: status })
+      await providersApi.verifyProvider(id, { status: status })
       fetchProviders()
     } catch (err) {
       console.error('Failed to verify provider:', err)

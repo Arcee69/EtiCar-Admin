@@ -200,6 +200,7 @@ export interface ProvidersData {
   services: string[]
   service_types: string[]
   city: string
+  status: string
   active_jobs: string
   completed_jobs: string
   wallet_balance: number
