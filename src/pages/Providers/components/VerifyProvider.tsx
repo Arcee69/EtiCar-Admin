@@ -3,6 +3,7 @@ import { CgSpinner } from "react-icons/cg"
 import { HiOutlineXMark, HiOutlineCheckBadge } from "react-icons/hi2"
 import { toast } from "sonner"
 import type { ProvidersData } from "../../../types/global"
+import { Button } from "../../../components"
 
 interface VerifyProviderProps {
   handleClose: () => void
@@ -45,7 +46,7 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-full max-w-3xl rounded-2xl border border-GREY-100 h-160 bg-white shadow-xl"
+      className="w-full max-w-3xl rounded-2xl border border-GREY-100 max-h-250 overflow-y-auto bg-white shadow-xl"
     >
       <div className="flex items-start justify-between border-b border-GREY-100 px-6 py-4">
         <div>
@@ -100,10 +101,47 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
               <div><span className="font-medium">Active Jobs:</span> {selectedProvider.active_jobs}</div>
               <div><span className="font-medium">Completed:</span> {selectedProvider.completed_jobs}</div>
               <div><span className="font-medium">Wallet:</span> {selectedProvider.wallet_balance_formatted}</div>
-              <div><span className="font-medium">Status:</span> {selectedProvider.is_open ? 'Open' : 'Closed'}</div>
+              <div><span className="font-medium">Availabilty:</span> {selectedProvider.is_open ? 'Open' : 'Closed'}</div>
             </div>
           </div>
         </div>
+
+        {/* Identification */}
+          <div className="flex flex-col gap-4">
+              <div className="rounded-xl border border-GREY-100 p-4">
+                <p className="mb-3 text-xs font-semibold tracking-wide text-GREY-200 uppercase">ID Type</p>
+                <p className="text-sm text-NEUTRAL-100">{selectedProvider.id_type || "Not Provided"}</p>
+              </div>
+         
+              <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl border border-GREY-100 p-4">
+                    <p className="mb-3 text-xs font-semibold tracking-wide text-GREY-200 uppercase">Selfie</p>
+                    <img
+                      src={selectedProvider.selfie_url}
+                      alt="Selfie"
+                      className="w-48 h-48 object-cover rounded-lg border border-GREY-100"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  </div>
+               
+             
+                <div className="rounded-xl border border-GREY-100 p-4">
+                  <p className="mb-3 text-xs font-semibold tracking-wide text-GREY-200 uppercase">Government ID</p>
+                  <img
+                    src={selectedProvider.government_id_url}
+                    alt="Government ID"
+                    className="w-full h-48 object-cover rounded-lg border border-GREY-100"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                </div>
+          
+              </div>
+          
+          </div>
 
         {/* Notes field */}
         <div className="flex flex-col">
@@ -122,6 +160,12 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
 
         {/* Action Buttons */}
         <div className="flex flex-col-reverse gap-2 border-t border-GREY-100 pt-5 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            onClick={handleClose}
+            className="rounded-lg border cursor-pointer border-GREY-100 px-4 py-2.5 text-sm font-medium text-NEUTRAL-100 hover:bg-GREY-300"
+            title="Close"
+          />
           <button
             type="button"
             onClick={handleDecline}

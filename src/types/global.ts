@@ -201,6 +201,9 @@ export interface ProvidersData {
   service_types: string[]
   city: string
   status: string
+  selfie_url: string 
+  government_id_url: string
+  id_type: string | null
   active_jobs: string
   completed_jobs: string
   wallet_balance: number

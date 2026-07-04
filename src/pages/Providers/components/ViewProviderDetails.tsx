@@ -29,7 +29,7 @@ const ViewProviderDetails = ({
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-full max-w-3xl rounded-2xl border border-GREY-100 h-auto max-h-[80vh] mt-10 overflow-y-auto bg-white shadow-xl"
+      className="w-full max-w-3xl rounded-2xl border border-GREY-100 h-auto max-h-[75vh] mt-10 overflow-y-auto bg-white shadow-xl"
     >
       <div className="flex items-start justify-between border-b border-GREY-100 px-6 py-4 sticky top-0 bg-white z-10">
         <div>
