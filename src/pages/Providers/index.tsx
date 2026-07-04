@@ -87,24 +87,24 @@ const Providers = () => {
     {
       key: 'business_name',
       header: 'Name',
-      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.business_name}</span>,
+      render: (item) => <span className="font-medium text-NEUTRAL-100">{item.business_name || "Not Provided"}</span>,
     },
     {
       key: 'phone',
       header: 'Phone',
-      render: (item) => <span className="text-NEUTRAL-100">{item.phone}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.phone || "Not Provided"}</span>,
     },
     {
       key: 'services',
       header: 'Services',
       render: (item) => (
-        <span className="text-NEUTRAL-100">{item.services.join(', ')}</span>
+        <span className="text-NEUTRAL-100">{item.services?.join(', ') || "Not Provided"}</span>
       ),
     },
     {
       key: 'city',
       header: 'City',
-      render: (item) => <span className="text-NEUTRAL-100">{item.city}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.city || "Not Provided"}</span>,
     },
     {
       key: 'active_jobs',

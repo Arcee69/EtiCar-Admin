@@ -81,12 +81,12 @@ const Users = () => {
     {
       key: 'phone',
       header: 'Phone',
-      render: (item) => <span className="text-NEUTRAL-100">{item.phone}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.phone || "Not Provided"}</span>,
     },
     {
       key: 'email',
       header: 'Email',
-      render: (item) => <span className="text-NEUTRAL-100">{item.email || 'Unknown Email'}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.email || 'Not Provided'}</span>,
     },
     {
       key: 'status',

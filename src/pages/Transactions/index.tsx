@@ -104,7 +104,7 @@ const Transactions = () => {
     {
       key: 'user',
       header: 'User',
-      render: (item) => <span className="text-NEUTRAL-100">{item.user.name}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.user.name || "Not Provided"}</span>,
     },
     {
       key: 'amount',

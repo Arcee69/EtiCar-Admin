@@ -101,9 +101,9 @@ const StatCard = ({ label, value, subtext, variant = 'white', icon }: StatCardPr
           <p className={`text-3xl font-bold ${s.text}`}>{value}</p>
           {subtext && (
             <p className={`text-xs mt-2 flex items-center gap-1 ${s.sub}`}>
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {/* <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-              </svg>
+              </svg> */}
               {subtext}
             </p>
           )}
@@ -381,7 +381,7 @@ const Dashboard = () => {
             {loading
               ? Array(3).fill(0).map((_, i) => <SkeletonAlert key={i} />)
               : alerts?.length > 0
-                ? alerts?.map((alert) => (
+                ? alerts?.slice(0, 4).map((alert) => (
                     <div
                       key={alert.id}
                       className={`rounded-lg px-4 py-3 border ${

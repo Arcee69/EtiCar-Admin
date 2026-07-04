@@ -9,7 +9,7 @@ import type { Vendor } from '../../types/global'
 import UpdateVendorStatus from './components/UpdateVendorStatus'
 import VendorDetails from './components/VendorDetails'
 
-type VendorStatus = 'active' | 'pending' | 'suspended'
+type VendorStatus = 'active' | 'pending' | 'suspended' | 'inactive'
 
 // Using Vendor type from global types
 
@@ -17,11 +17,12 @@ const statusStyles: Record<VendorStatus, string> = {
   active: 'bg-green-100 text-green-700',
   pending: 'bg-orange-100 text-orange-600',
   suspended: 'bg-red-100 text-red-300',
+  inactive: 'bg-gray-100 text-gray-500',
 }
 
 const Vendors = () => {
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'active' | 'pending' | 'suspended' | ''>('')
+  const [statusFilter, setStatusFilter] = useState<'active' | 'pending' | 'suspended' | 'inactive' | ''>('')
   const [locationFilter, setLocationFilter] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
@@ -88,22 +89,22 @@ const Vendors = () => {
     {
       key: 'businessName',
       header: 'Business Name',
-      render: (item) => <span className="text-NEUTRAL-100">{item.business_name}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.business_name || 'Not Provided'}</span>,
     },
     {
       key: 'location',
       header: 'Location',
-      render: (item) => <span className="text-NEUTRAL-100">{`${item.location.city}, ${item.location.state}`}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{`${item.location.city || 'Not Provided'}, ${item.location.state || 'Not Provided'}`}</span>,
     },
     {
       key: 'products',
       header: 'Products',
-      render: (item) => <span className="text-NEUTRAL-100">{item.products_count}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.products_count || 0}</span>,
     },
     {
       key: 'ordersFulfilled',
       header: 'Orders Fulfilled',
-      render: (item) => <span className="text-NEUTRAL-100">{item.orders_fulfilled}</span>,
+      render: (item) => <span className="text-NEUTRAL-100">{item.orders_fulfilled || 0}</span>,
     },
     {
       key: 'status',
@@ -164,13 +165,14 @@ const Vendors = () => {
             <HiOutlineFunnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-GREY-200" />
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as 'active' | 'pending' | 'suspended' | '')}
+              onChange={(e) => setStatusFilter(e.target.value as 'active' | 'pending' | 'suspended' | 'inactive' | '')}
               className="pl-9 pr-4 py-2 border border-GREY-100 rounded-lg text-sm text-NEUTRAL-100 bg-white focus:outline-none focus:ring-2 focus:ring-BLUE-400 focus:border-transparent appearance-none"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
               <option value="pending">Pending</option>
               <option value="suspended">Suspended</option>
+              <option value="inactive">Inactive</option>
             </select>
           </div>
 

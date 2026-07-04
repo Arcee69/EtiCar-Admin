@@ -6,7 +6,7 @@ import apiInstance from './instance'
 
 export interface VendorFilters {
   search?: string
-  status?: 'active' | 'pending' | 'suspended'
+  status?: 'active' | 'pending' | 'suspended' | 'inactive'
   location?: string
   per_page?: number
   page?: number
