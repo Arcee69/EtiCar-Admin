@@ -4,7 +4,7 @@ import apiInstance from "./instance"
 
 export interface ServiceRequestsFilters {
   search?: string
-  status?: 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted'
+  status?: 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted' | 'en_route' | 'arrived'
   per_page?: number
   page?: number
 }

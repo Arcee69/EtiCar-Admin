@@ -62,9 +62,10 @@ const AssignServiceRequestProvider = ({ handleClose, serviceRequestDetails, onUp
 
     // Filter to show only verified providers
     const availableProviders = providers.filter(p => p.verification_status === 'verified')
+    const selectedProvider = availableProviders.find(p => p.id === selectedProviderId)
 
     return (
-        <div className="bg-white min-w-2xl p-4 mt-10 h-120 overflow-y-auto shadow-xl rounded-lg">
+        <div className="bg-white w-full max-w-2xl p-4 mt-10 h-120 overflow-y-auto shadow-xl rounded-lg">
             <div className="mb-5 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-NEUTRAL-100">Assign Service Request</h2>
                 <button
@@ -121,16 +122,21 @@ const AssignServiceRequestProvider = ({ handleClose, serviceRequestDetails, onUp
                             <select
                                 value={selectedProviderId}
                                 onChange={(e) => setSelectedProviderId(e.target.value)}
-                                className="w-full pl-4 pr-4 py-2 border border-GREY-100 rounded-lg text-sm text-NEUTRAL-100 bg-white focus:outline-none focus:ring-2 focus:ring-BLUE-400 focus:border-transparent appearance-none"
+                                className="w-full pl-4 pr-4 py-2 border border-GREY-100 rounded-lg text-sm text-NEUTRAL-100 bg-white truncate focus:outline-none focus:ring-2 focus:ring-BLUE-400 focus:border-transparent appearance-none"
                                 required
                             >
                                 <option value="">Choose a provider...</option>
                                 {availableProviders.map(provider => (
-                                    <option key={provider.id} value={provider.id}>
-                                        {provider.business_name} - {provider.services.join(', ')}
+                                    <option key={provider.id} value={provider.id} title={provider.services.join(', ')}>
+                                        {provider.business_name}
                                     </option>
                                 ))}
                             </select>
+                            {selectedProvider && selectedProvider.services.length > 0 && (
+                                <p className="text-xs text-GREY-200 wrap-break-word">
+                                    <span className="font-medium">Services:</span> {selectedProvider.services.join(', ')}
+                                </p>
+                            )}
                         </div>
                     )}
                 </section>

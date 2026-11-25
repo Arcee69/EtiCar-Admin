@@ -10,8 +10,8 @@ import { serviceRequestsApi, type ServiceRequestsFilters } from '../../services/
 import type { ServiceRequestData } from '../../types/global'
 import UnAssignServiceRequestProvider from './components/UnAssignServiceRequestProvider'
 
-type ServiceStatus = 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted'
-type StatusFilter = 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted' | ''
+type ServiceStatus = 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted' | 'en_route'| 'arrived'
+type StatusFilter = 'completed' | 'pending' | 'cancelled' | 'in_progress' | 'accepted' | 'en_route'| 'arrived' | ''
 
 
 const statusStyles: Record<ServiceStatus, string> = {
@@ -20,6 +20,8 @@ const statusStyles: Record<ServiceStatus, string> = {
   'in_progress': 'bg-blue-100 text-blue-600',
   'cancelled': 'bg-red-100 text-red-700',
   'accepted': 'bg-purple-100 text-purple-700',
+  'en_route': 'bg-yellow-100 text-yellow-700',
+  'arrived': 'bg-indigo-100 text-indigo-700',
 }
 
 const ServiceRequests = () => {
@@ -177,6 +179,8 @@ const ServiceRequests = () => {
               <option value="cancelled">Cancelled</option>
               <option value="in_progress">In Progress</option>
               <option value="accepted">Accepted</option>
+              <option value="en_route">En Route</option>
+              <option value="arrived">Arrived</option>
             </select>
           </div>
         </div>
