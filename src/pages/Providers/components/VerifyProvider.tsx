@@ -8,12 +8,23 @@ import { Button } from "../../../components"
 interface VerifyProviderProps {
   handleClose: () => void
   selectedProvider: ProvidersData | null
-  onConfirm: (status: 'verified' | 'declined') => void
+  onConfirm: (status: 'verified' | 'declined', reason?: string) => Promise<void>
 }
+
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string
+    }
+  }
+}
+
+const getErrorMessage = (error: unknown, fallback: string) =>
+  (error as ApiError)?.response?.data?.message || fallback
 
 const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProviderProps) => {
   const [loading, setLoading] = useState(false)
-  const [notes, setNotes] = useState('')
+  const [reason, setReason] = useState('')
 
   if (!selectedProvider) return null
 
@@ -24,20 +35,25 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
     try {
       await onConfirm('verified')
       toast.success("Provider verified successfully")
-    } catch {
-      // Error handled by parent
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to verify provider. Please try again."))
     } finally {
       setLoading(false)
     }
   }
 
   const handleDecline = async () => {
+    const trimmedReason = reason.trim()
+    if (!trimmedReason) {
+      toast.error("Please provide a reason for declining this provider")
+      return
+    }
     setLoading(true)
     try {
-      await onConfirm('declined')
+      await onConfirm('declined', trimmedReason)
       toast.success("Provider declined successfully")
-    } catch {
-      // Error handled by parent
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to decline provider. Please try again."))
     } finally {
       setLoading(false)
     }
@@ -143,16 +159,16 @@ const VerifyProvider = ({ handleClose, selectedProvider, onConfirm }: VerifyProv
           
           </div>
 
-        {/* Notes field */}
+        {/* Decline reason */}
         <div className="flex flex-col">
-          <label htmlFor="notes" className="text-xs font-semibold text-GREY-200 mb-2">
-            Notes (optional - internal use only)
+          <label htmlFor="reason" className="text-xs font-semibold text-GREY-200 mb-2">
+            Reason for declining (required to decline)
           </label>
           <textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Add any notes about this verification decision..."
+            id="reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Explain why this provider is being declined..."
             rows={3}
             className="rounded-lg border border-GREY-100 p-3 text-sm text-NEUTRAL-100 focus:outline-none focus:ring-2 focus:ring-BLUE-400 resize-none"
           />

@@ -157,13 +157,9 @@ const Providers = () => {
     URL.revokeObjectURL(url)
   }
 
-  const handleVerify = async (id: string, status: 'verified' | 'declined') => {
-    try {
-      await providersApi.verifyProvider(id, { status: status })
-      fetchProviders()
-    } catch (err) {
-      console.error('Failed to verify provider:', err)
-    }
+  const handleVerify = async (id: string, status: 'verified' | 'declined', reason?: string) => {
+    await providersApi.verifyProvider(id, { status, ...(reason ? { reason } : {}) })
+    fetchProviders()
   }
 
   const handleDeactivate = async (id: string) => { //, reason: string
@@ -257,7 +253,7 @@ const Providers = () => {
                   >
                     View Details
                   </button>
-                  {item.can_verify !== false && (
+                  {item.verification_status === "pending" && (
                     <button
                       className="w-full px-4 py-2 text-sm text-left text-NEUTRAL-100 hover:bg-GREY-300 transition-colors"
                       onClick={() => {
@@ -279,7 +275,7 @@ const Providers = () => {
                   >
                     Edit Provider
                   </button>
-                  {item.can_deactivate !== false && (
+                  {item.verification_status === "verified" && (
                     <button
                       className="w-full px-4 py-2 text-sm text-left text-RED-300 hover:bg-GREY-300 transition-colors"
                       onClick={() => {
@@ -327,9 +323,9 @@ const Providers = () => {
         <VerifyProvider
           selectedProvider={selectedProvider}
           handleClose={() => setOpenVerificationModal(false)}
-          onConfirm={(status) => {
+          onConfirm={async (status, reason) => {
             if (selectedProvider) {
-              handleVerify(selectedProvider.id, status)
+              await handleVerify(selectedProvider.id, status, reason)
               setOpenVerificationModal(false)
             }
           }}

@@ -47,7 +47,10 @@ export const providersApi = {
   },
 
   //Verify provider
-  verifyProvider: async (id: string, data: Partial<ProvidersData>): Promise<ProvidersData> => {
+  verifyProvider: async (
+    id: string,
+    data: { status: 'verified' | 'declined'; reason?: string }
+  ): Promise<ProvidersData> => {
     const response = await apiInstance.put(`${GET_PROVIDERS}/${id}/verify`, data)
     return response.data.data
   },
